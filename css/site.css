@@ -19,6 +19,7 @@
   --ink-soft:#3d454d;
   --muted:#5c646d;
   --spark:#e4002b;
+  --on-spark:#ffffff;   /* text that sits on --spark */
   --spark-dark:#b80023;
   --flare:#ff4a1f;
 
@@ -90,7 +91,7 @@ table{border-collapse:collapse;width:100%}
   transition:background-color .16s ease,border-color .16s ease,color .16s ease;
 }
 .button--lg{padding:15px 28px;font-size:1rem}
-.button--solid{background:var(--spark);color:#fff;border-color:var(--spark)}
+.button--solid{background:var(--spark);color:var(--on-spark);border-color:var(--spark)}
 .button--solid:hover{background:var(--spark-dark);border-color:var(--spark-dark)}
 .button--line{border-color:var(--rule-strong);color:var(--ink);background:transparent}
 .button--line:hover{border-color:var(--ink);background:var(--panel)}
@@ -98,8 +99,7 @@ table{border-collapse:collapse;width:100%}
 /* ---------- masthead ---------- */
 .masthead{
   position:sticky;top:0;z-index:90;
-  background:rgba(255,255,255,.92);
-  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  background:var(--paper);
   border-bottom:1px solid var(--rule);
 }
 .masthead__in{
@@ -197,8 +197,8 @@ table{border-collapse:collapse;width:100%}
    and the copy stay put while the beats change. */
 .stage.is-tour{padding-block:0}
 .stage.is-tour .stage__pin{
-  min-height:calc(100svh - var(--nav));display:grid;align-items:stretch;
-  padding-block:clamp(24px,4vh,44px) clamp(20px,3vh,34px);
+  min-height:100svh;display:grid;align-items:stretch;
+  padding-block:calc(var(--nav) + clamp(10px,2vh,24px)) var(--pin-pb);
 }
 /* The copy is shorter than the can. Centring the whole row left a band of
    white under the nav, so the can stretches to the panel instead and only
@@ -216,7 +216,7 @@ table{border-collapse:collapse;width:100%}
 
 /* Short laptop screens: the pinned panel must still fit in one viewport. */
 @media (max-height:820px){
-  .stage.is-tour .stage__pin{padding-block:16px 14px}
+  .stage.is-tour{--pin-pb:14px}
   .stage.is-tour .stage__title{font-size:clamp(1.9rem,3vw,2.6rem)}
   .stage.is-tour .beats{min-height:11.5rem}
   .stage.is-tour .factrow{margin-top:24px}
@@ -227,8 +227,8 @@ table{border-collapse:collapse;width:100%}
    can grew to ~930px and swamped the page. Any slack goes below it, so the
    gap under the nav stays tight. */
 .stage.is-tour .stage__plate{
-  aspect-ratio:auto;height:100%;min-height:300px;max-height:760px;
-  align-self:start;
+  aspect-ratio:auto;height:100%;min-height:300px;max-height:none;
+  align-self:stretch;
 }
 .stage.is-tour .factrow{margin-top:34px}
 
@@ -609,4 +609,159 @@ table{border-collapse:collapse;width:100%}
     transition-duration:.01ms !important;
   }
   .pack__btn:hover img{transform:none}
+}
+
+
+/* ============================================================
+   colour fields
+
+   Every component already reads its colours from the tokens, so a
+   tone only has to re-declare the tokens on the section element and
+   the whole subtree follows. No per-component overrides.
+   ============================================================ */
+[data-tone]{background:var(--paper);color:var(--ink)}
+
+[data-tone="warm"]{
+  --paper:#faf7f2;
+  --panel:#f2ece2;
+  --rule:#e7dfd3;
+  --rule-strong:#cec3b3;
+  --muted:#6a6256;
+}
+
+[data-tone="dark"]{
+  --paper:#14181d;
+  --panel:#1c2128;
+  --ink:#f3f5f7;
+  --ink-soft:#c6ccd3;
+  --muted:#98a2ab;
+  --rule:rgba(255,255,255,.13);
+  --rule-strong:rgba(255,255,255,.26);
+  --spark:#ff3355;        /* lifted so it still reads on charcoal */
+  --on-spark:#14181d;
+}
+
+[data-tone="red"]{
+  --paper:#e4002b;
+  --panel:#cc0026;
+  /* Every text tone is white here. A pink tint measures 3.2:1 against this
+     red and a pale one 4.0:1, both short of the 4.5:1 AA needs for body and
+     label sizes — only white clears it, at 4.85:1. Hierarchy comes from size
+     and weight instead of hue. */
+  --ink:#ffffff;
+  --ink-soft:#ffffff;
+  --muted:#ffffff;
+  --rule:rgba(255,255,255,.22);
+  --rule-strong:rgba(255,255,255,.42);
+  --spark:#ffffff;        /* the accent inverts: white on red */
+  --spark-dark:#f0eeec;
+  --on-spark:#c8002a;
+}
+
+/* The band helper predates tones; a toned section owns its own field. */
+[data-tone].band{background:var(--paper)}
+
+/* Charcoal sits against white on both sides, so it needs no rules. */
+[data-tone="dark"],[data-tone="red"]{border-block:0}
+
+/* Photographs and the label thumbnails keep a light mount on dark fields. */
+[data-tone="dark"] .pack__btn{background:#f3f0e8}
+
+/* The enquiry form is a white card on the red field — a red form on a red
+   section would lose every input edge. It resets the tokens for its subtree. */
+[data-tone="red"] .form{
+  --paper:#ffffff;
+  --panel:#ffffff;
+  --ink:#14161a;
+  --ink-soft:#3d454d;
+  --muted:#5c646d;
+  --rule:#dfe3e6;
+  --rule-strong:#c5ccd2;
+  --spark:#e4002b;
+  --spark-dark:#b80023;
+  --on-spark:#ffffff;
+  background:#fff;
+  color:var(--ink);
+  border-color:transparent;
+}
+
+
+
+/* ============================================================
+   the banner
+
+   Not a full-bleed red field: a saturated slab that size strains
+   the eye, flattens the page and fights the can's own red cap.
+   Instead an asymmetric red plate holds the right of the frame and
+   bleeds off the edge, the can stands on it and crosses its foot
+   onto white, and the type stays ink-on-white where it is sharpest.
+   Depth comes from a gradient and a soft glow behind the product
+   rather than from one flat colour.
+   ============================================================ */
+.stage{
+  --breakout:0px;
+  --pin-pb:clamp(18px,3vh,30px);
+  --plate-left:47%;
+  --red-deep:#b8001f;
+  --red-mid:#e4002b;
+  background:var(--paper);
+}
+@media (min-height:720px){
+  .stage.is-tour{--breakout:calc(var(--pin-pb) + 100px)}
+}
+
+.stage__pin{position:relative;isolation:isolate}
+
+/* the red plate */
+.stage__pin::before{
+  content:'';
+  position:absolute;
+  inset:0 0 var(--breakout) var(--plate-left);
+  z-index:0;
+  background:
+    radial-gradient(60% 46% at 50% 42%,rgba(255,255,255,.17),transparent 70%),
+    linear-gradient(158deg,var(--red-deep) 0%,var(--red-mid) 52%,#cf0026 100%);
+}
+.stage__grid{position:relative;z-index:1}
+
+/* The kicker carries the accent on white; the rail sits on the plate. */
+.stage__kicker{color:var(--spark)}
+.stage__grab{color:var(--muted)}
+
+.stage__steps button{color:rgba(255,255,255,.72)}
+.stage__steps button:hover,
+.stage__steps button.is-on{color:#fff}
+.stage__progress{background:rgba(255,255,255,.3)}
+.stage__progress i{background:#fff}
+
+/* Flat layout has no plate: the beats stack and a band would cut them. */
+.stage:not(.is-tour)::before,
+.stage:not(.is-tour) .stage__pin::before{content:none}
+
+/* Mobile and reduced-motion stack the beats, so there is no pinned plate.
+   The can still gets its red field: a bleeding band behind the product that
+   stops short of its base, so the can crosses onto white exactly as it does
+   on the desktop banner. */
+.stage:not(.is-tour) .stage__plate{overflow:visible}
+.stage:not(.is-tour) .stage__plate::before{
+  content:'';
+  position:absolute;
+  inset:-24px -50vw 38px;
+  z-index:-1;
+  background:
+    radial-gradient(58% 44% at 50% 40%,rgba(255,255,255,.16),transparent 70%),
+    linear-gradient(158deg,var(--red-deep) 0%,var(--red-mid) 54%,#cf0026 100%);
+}
+
+/* The contact field gets the same depth rather than one flat wash. */
+[data-tone="red"].contact{
+  background:
+    radial-gradient(52% 40% at 22% 30%,rgba(255,255,255,.13),transparent 68%),
+    linear-gradient(158deg,#b8001f 0%,#e4002b 56%,#cf0026 100%);
+}
+
+/* Below the breakout threshold the plate runs full height, so the grab hint
+   is standing on red rather than on the white strip. */
+@media (max-height:719px){
+  .stage.is-tour .stage__grab{color:rgba(255,255,255,.85)}
 }

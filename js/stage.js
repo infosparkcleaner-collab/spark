@@ -321,7 +321,7 @@ async function buildCan() {
     tmp.set(0, 0, baseDist + pose.dolly);
     moved += camera.position.distanceTo(tmp);
     camera.position.lerp(tmp, 0.12);
-    camera.lookAt(0, 0, 0);
+    camera.lookAt(0, frameDrop, 0);
 
     shadow.material.opacity = 0.4 - pose.lift * 0.12;
 
@@ -337,7 +337,10 @@ async function buildCan() {
      desktop plate and a short mobile one. */
   const FIT_H = 5.9;
   const FIT_W = 2.2;
+  const FIT_CAP = 780;   // canvas height the framing is calibrated to
+  const FOOT_PX = 40;    // gap kept between the can's base and the canvas foot
   let baseDist = 11;
+  let frameDrop = 0.35;  // recomputed on resize
 
   function resize() {
     const w = host.clientWidth;
@@ -348,8 +351,16 @@ async function buildCan() {
     camera.aspect = w / h;
     camera.updateProjectionMatrix();
 
+    /* Past the calibration height the frame is widened in step with the
+       canvas, so the can keeps the same size in pixels instead of growing
+       to fill a tall panel. */
+    const fitH = FIT_H * (h / Math.min(h, FIT_CAP));
     const half = Math.tan((camera.fov * Math.PI) / 360);
-    baseDist = Math.max(FIT_H / 2 / half, FIT_W / 2 / (half * camera.aspect));
+    baseDist = Math.max(fitH / 2 / half, FIT_W / 2 / (half * camera.aspect));
+
+    /* Look above centre by whatever puts the can's base FOOT_PX above the
+       canvas foot, so the seam below it always crosses the same spot. */
+    frameDrop = -2.3 + (fitH / h) * (h / 2 - FOOT_PX);
     dirty = true;
   }
 
