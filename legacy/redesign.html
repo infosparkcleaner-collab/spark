@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Spark Brake &amp; Parts Cleaner</title>
+<meta name="description" content="Spark Brake &amp; Parts Cleaner cuts brake fluid, grease, oil and dirt, then evaporates without residue. Professional strength, 550 ml.">
+<meta name="theme-color" content="#F1F2F0">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,400..900;1,62..125,400..900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/spark.css">
+<link rel="preload" as="image" href="assets/img/spark-hands-start.webp">
+</head>
+<body>
+<a class="skip" href="#next">Skip the demonstration</a>
+
+<header class="bar">
+  <a class="brand" href="#top" aria-label="Spark, back to top">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1.5l2.3 6.4 6.4 2.3-6.4 2.3L12 18.9l-2.3-6.4L3.3 10.2l6.4-2.3z"/></svg>
+    <span>Spark</span>
+  </a>
+  <nav class="bar__links" aria-label="Sections">
+    <a href="#use">How to use</a>
+    <a href="index.html#proof">Proof</a>
+    <a href="index.html#apps">Uses</a>
+    <a href="index.html#specs">Specs &amp; safety</a>
+  </nav>
+  <a class="button" href="assets/reference/product-back.jpg" target="_blank" rel="noopener">Read the label</a>
+</header>
+
+<main id="top">
+  <section class="hero" id="use" aria-labelledby="heroTitle">
+    <div class="hero__stage">
+      <div class="hero__copy">
+        <div class="slot">
+          <div class="panel panel--intro" data-panel="0">
+            <h1 class="display" id="heroTitle">Cleans fast.<br>Dries fast.</h1>
+            <p class="lede">Spark Brake &amp; Parts Cleaner cuts brake fluid, grease, oil and dirt, then evaporates without residue. Professional strength, 550&nbsp;ml.</p>
+            <p class="hint">Scroll to work through the directions printed on the can.</p>
+          </div>
+          <div class="panel" data-panel="1">
+            <h2 class="display">Shake<br>well.</h2>
+            <p class="lede">Shake the can hard, then pull off the cap.</p>
+          </div>
+          <div class="panel" data-panel="2">
+            <h2 class="display"><span class="stretch">Spray</span><br>liberally.</h2>
+            <p class="lede">Soak the part. Brake fluid, grease and oil run off with the spray.</p>
+          </div>
+          <div class="panel" data-panel="3">
+            <h2 class="display">Let it<br>drip dry.</h2>
+            <p class="lede">No wiping, no rinsing. It evaporates quickly and leaves no residue.</p>
+          </div>
+        </div>
+
+        <div class="hero__foot">
+          <nav class="track" aria-label="Directions">
+            <ol>
+              <li><button type="button" data-go="1"><span class="track__n">1</span>Shake well<i class="track__fill"></i></button></li>
+              <li><button type="button" data-go="2"><span class="track__n">2</span>Spray liberally<i class="track__fill"></i></button></li>
+              <li><button type="button" data-go="3"><span class="track__n">3</span>Let it drip dry<i class="track__fill"></i></button></li>
+            </ol>
+          </nav>
+          <p class="caution">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l10 17.5H2z"/><path d="M12 9.5v5M12 17.2v.3"/></svg>
+            Never spray onto hot surfaces.
+          </p>
+        </div>
+      </div>
+
+      <figure class="hero__film">
+        <video muted playsinline preload="none" poster="assets/img/spark-hands-start.webp" data-src="assets/video/spark-hand-demo.mp4" aria-describedby="filmDesc"></video>
+        <figcaption id="filmDesc" class="sr-only">Gloved hands hold a Spark can beside a rusty brake disc, remove the cap and spray the disc. The film follows your scrolling.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="next" id="next">
+    <p>Hero preview. Proof, uses, and specs &amp; safety will be rebuilt in this style next.</p>
+    <a class="button button--quiet" href="index.html">Open the current site</a>
+  </section>
+</main>
+
+<script src="assets/vendor/gsap.min.js"></script>
+<script src="assets/vendor/ScrollTrigger.min.js"></script>
+<script src="assets/vendor/lenis.min.js"></script>
+<script src="js/spark.js"></script>
+</body>
+</html>

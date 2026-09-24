@@ -1,0 +1,386 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SPARK — Brake &amp; Parts Cleaner</title>
+<meta name="description" content="Spark Brake &amp; Parts Cleaner. Powerful cleaning, fast drying, no residue. Professional strength for maximum performance.">
+<meta name="theme-color" content="#08090B"><link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow+Condensed:ital,wght@0,600;0,700;1,600;1,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/editorial.css">
+<link rel="stylesheet" href="css/experience.css">
+<link rel="stylesheet" href="css/hand-experience.css">
+<script type="importmap">{"imports":{"three":"./assets/vendor/three.module.js"}}</script>
+<link rel="preload" as="image" href="assets/img/spark-studio-higgsfield.webp">
+</head>
+<body class="is-loading">
+<a class="skip-link" href="#experience">Skip to content</a>
+
+<!-- overlays -->
+<div class="grain" aria-hidden="true"></div>
+<div class="vignette" aria-hidden="true"></div>
+<div class="progress" aria-hidden="true"><span id="progressBar"></span></div>
+
+<!-- preloader -->
+<div class="loader" id="loader">
+  <div class="loader__inner">
+    <div class="loader__mark">
+      <span>S</span><span>P</span><span>A</span><span>R</span><span>K</span>
+    </div>
+    <div class="loader__sub">BRAKE &amp; PARTS CLEANER</div>
+    <div class="loader__bar"><i id="loaderFill"></i></div>
+    <div class="loader__pct"><span id="loaderPct">0</span><em>%</em></div>
+  </div>
+</div>
+
+<!-- nav -->
+<header class="nav" id="nav">
+  <a class="nav__logo" href="#top">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1.5l2.3 6.4 6.4 2.3-6.4 2.3L12 18.9l-2.3-6.4L3.3 10.2l6.4-2.3z"/></svg>
+    <span>SPARK</span>
+  </a>
+  <nav class="nav__links" id="navLinks">
+    <a href="#proof">Proof</a>
+    <a href="#pillars">Performance</a>
+    <a href="#apps">Applications</a>
+    <a href="#specs">Specs</a>
+  </nav>
+  <a class="btn btn--sm" href="#cta"><span>Explore Spark ↗</span></a>
+  <button class="nav__burger" id="navBurger" aria-label="Open menu" aria-expanded="false" aria-controls="navLinks"><i></i><i></i><i></i></button>
+</header>
+
+<main id="top">
+<section class="experience is-static" id="experience" aria-label="The SPARK product experience">
+  <div class="experience__stage">
+    <div class="experience__topline">
+      <span><i></i> BRAKE &amp; PARTS CLEANER</span>
+      <span>PROFESSIONAL STRENGTH / 550 ML</span>
+    </div>
+    <h1 class="experience__title">SPARK</h1>
+    <img class="experience__fallback" src="assets/img/spark-studio-higgsfield.webp" alt="SPARK professional-strength brake cleaner, black aerosol can with red cap" fetchpriority="high" width="1744" height="2336">
+    <div class="experience__canvas" aria-label="Interactive SPARK can. Drag to rotate or use the rotate button."></div>
+
+    <!-- 3D Interactive Hotspots -->
+    <div class="experience__hotspots" aria-hidden="true">
+      <div class="hotspot" data-hotspot="nozzle" style="opacity:0;">
+        <button class="hotspot__pin" aria-label="Precision Aerosol Nozzle"></button>
+        <div class="hotspot__card">
+          <strong>PRECISION VALVE</strong>
+          <span>High-velocity spray tip for targeted blast without waste.</span>
+        </div>
+      </div>
+      <div class="hotspot" data-hotspot="formula" style="opacity:0;">
+        <button class="hotspot__pin" aria-label="Professional Chemistry"></button>
+        <div class="hotspot__card">
+          <strong>LOW-VOC FORMULA</strong>
+          <span>Non-chlorinated fast-evaporating solvent cuts heavy oil instantly.</span>
+        </div>
+      </div>
+      <div class="hotspot" data-hotspot="capacity" style="opacity:0;">
+        <button class="hotspot__pin" aria-label="550ml Commercial Pack"></button>
+        <div class="hotspot__card">
+          <strong>550 ML PRO CAN</strong>
+          <span>Heavy-duty steel aerosol container built for professional workshops.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Workshop Video Demonstration Enclosure -->
+    <figure class="experience__film" aria-label="Gloved hands demonstrate SPARK on a brake disc">
+      <video class="experience__video" muted playsinline preload="auto" poster="assets/img/spark-hands-start.webp" data-src="assets/video/spark-hand-demo.mp4" aria-label="Scroll-controlled demonstration: remove cap, press nozzle, spray brake disc, release"></video>
+      <figcaption>THE WORKSHOP EDIT <span>SCROLL TO CONTROL</span></figcaption>
+    </figure>
+
+    <!-- Narrative Caption -->
+    <div class="experience__caption">
+      <p class="experience__eyebrow">01 / MEET THE CAN</p>
+      <h2 class="experience__heading">SERIOUS POWER.
+ZERO RESIDUE.</h2>
+      <p class="experience__description">Professional-strength brake &amp; parts cleaner. Engineered for the hardest jobs in the shop.</p>
+    </div>
+
+    <!-- Right Controls & View Switcher -->
+    <div class="experience__side">
+      <div class="experience__views" aria-label="Display mode">
+        <button type="button" class="view-btn is-active" data-view="3d"><span>3D CAN</span></button>
+        <button type="button" class="view-btn" data-view="video"><span>WORKSHOP FILM</span></button>
+      </div>
+      <strong>550<span> ml</span></strong>
+      <span>MAXIMUM CLEANING POWER</span>
+      <button type="button" class="experience__rotator" data-rotate>ROTATE THE CAN ↻</button>
+    </div>
+
+    <a href="#proof" class="experience__skip">Skip to product details ↘</a>
+
+    <!-- Bottom Navigation Rail with 5 Chapters -->
+    <div class="experience__rail">
+      <div class="experience__chapters" aria-label="Animation chapters">
+        <button type="button" data-chapter="0" class="is-active" aria-current="step"><span>01</span> THE CAN</button>
+        <button type="button" data-chapter="1"><span>02</span> SHAKE &amp; UNCAP</button>
+        <button type="button" data-chapter="2"><span>03</span> SPRAY JET</button>
+        <button type="button" data-chapter="3"><span>04</span> CLEAN ROTOR</button>
+        <button type="button" data-chapter="4"><span>05</span> WORKSHOP DEMO</button>
+      </div>
+      <div class="experience__scroll">SCROLL TO UNLEASH THE POWER <span>↓</span></div>
+    </div>
+  </div>
+</section>
+<!-- marquee -->
+<div class="marquee" aria-hidden="true">
+  <div class="marquee__track">
+    <span>SHAKE <i>&bull;</i> SPRAY <i>&bull;</i> CLEAN <i>&bull;</i> IT&rsquo;S THAT EASY <i>&bull;</i> </span>
+    <span>SHAKE <i>&bull;</i> SPRAY <i>&bull;</i> CLEAN <i>&bull;</i> IT&rsquo;S THAT EASY <i>&bull;</i> </span>
+  </div>
+</div>
+
+<!-- ================================================
+     PROOF - before / after
+     ================================================ -->
+<section class="proof" id="proof">
+  <div class="sec-head">
+    <span class="sec-head__num">01</span>
+    <h2 class="sec-head__title">SEE THE<br>DIFFERENCE</h2>
+    <p class="sec-head__lede">Built to cut through brake fluid, grease, oil and dirt. Drag to explore the clean finish.</p>
+  </div>
+
+  <div class="ba" id="ba">
+    <div class="ba__pane ba__pane--after">
+      <div class="ba__art ba__art--clean"></div>
+      <span class="ba__tag ba__tag--after">AFTER</span>
+    </div>
+    <div class="ba__pane ba__pane--before" id="baBefore">
+      <div class="ba__art ba__art--dirty"></div>
+      <span class="ba__tag ba__tag--before">BEFORE</span>
+    </div>
+    <div class="ba__handle" id="baHandle" role="slider" aria-label="Before and after comparison" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50" tabindex="0">
+      <i></i><b><svg viewBox="0 0 24 24"><path d="M9 6l-5 6 5 6M15 6l5 6-5 6"/></svg></b>
+    </div>
+  </div>
+  <p class="comparison-note">Visual demonstration using a real brake-service photograph. The comparison is simulated, not a product test. <a href="https://pxhere.com/en/photo/1217636" target="_blank" rel="noopener">Photo source ↗</a></p>
+</section>
+
+<!-- ================================================
+     PILLARS - horizontal pinned
+     ================================================ -->
+<section class="pillars" id="pillars">
+  <div class="pillars__sticky">
+    <div class="pillars__head">
+      <span class="sec-head__num">02</span>
+      <h2>WHY IT<br>PERFORMS</h2>
+    </div>
+    <div class="pillars__track" id="pillarsTrack">
+
+      <article class="pillar">
+        <span class="pillar__num">01</span>
+        <div class="pillar__icon">
+          <svg viewBox="0 0 48 48"><path d="M24 6c-6 8-11 13-11 19a11 11 0 0022 0c0-6-5-11-11-19z"/><path d="M19 27c0 3 2 5 5 5"/></svg>
+        </div>
+        <h3>REMOVES BRAKE<br>FLUID, GREASE,<br>OIL &amp; DIRT</h3>
+        <p>Takes on brake fluid, grease, oil and dirt. A cleaner start for the parts that work hardest.</p>
+      </article>
+
+      <article class="pillar">
+        <span class="pillar__num">02</span>
+        <div class="pillar__icon">
+          <svg viewBox="0 0 48 48"><path d="M8 30h14M12 36h16M24 8v10M24 8l-6 6M24 8l6 6"/><path d="M30 24h10M34 30h8"/></svg>
+        </div>
+        <h3>FAST<br>DRYING</h3>
+        <p>Evaporates quickly, leaving a clean finish without residue. Less mess between you and the next job.</p>
+      </article>
+
+      <article class="pillar">
+        <span class="pillar__num">03</span>
+        <div class="pillar__icon">
+          <svg viewBox="0 0 48 48"><path d="M24 6l14 5v12c0 9-6 16-14 19-8-3-14-10-14-19V11z"/><path d="M18 24l4 4 8-9"/></svg>
+        </div>
+        <h3>SAFE ON METALS<br>&amp; MOST<br>SURFACES</h3>
+        <p>Made for brake systems, clutch components and metal parts. Check the product label for surface compatibility.</p>
+      </article>
+
+      <article class="pillar pillar--eco">
+        <span class="pillar__num">04</span>
+        <div class="pillar__icon">
+          <svg viewBox="0 0 48 48"><path d="M36 12c0 14-8 24-20 24 0-14 8-24 20-24z"/><path d="M14 38c4-8 10-14 18-18"/></svg>
+        </div>
+        <h3>LOW VOC.<br>HIGH<br>EXPECTATIONS.</h3>
+        <p>A non-chlorinated, low-VOC formula, as specified on the pack. Professional strength for your workshop essentials.</p>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- ================================================
+     NUMBERS
+     ================================================ -->
+<section class="stats" id="stats">
+  <div class="stat"><b data-count="550">0</b><em>ml</em><span>Pro-size can</span></div>
+  <div class="stat"><b>FAST</b><em>drying</em><span>Less waiting. More doing.</span></div>
+  <div class="stat"><b>NO</b><em>residue</em><span>A clean finish</span></div>
+  <div class="stat stat--eco"><b>LOW</b><em>VOC</em><span>Non-chlorinated formula</span></div>
+</section>
+
+<!-- ================================================
+     IDEAL FOR
+     ================================================ -->
+<section class="apps" id="apps">
+  <div class="sec-head">
+    <span class="sec-head__num">03</span>
+    <h2 class="sec-head__title">IDEAL<br>FOR</h2>
+    <p class="sec-head__lede">One can, the whole workshop. From fleet bays to the home garage.</p>
+  </div>
+
+  <figure class="application-story">
+    <div class="application-story__image"><img src="assets/img/product-application.webp" width="1600" height="900" loading="lazy" alt="SPARK with its cap removed, spraying an oily mechanical component in a workshop"></div>
+    <figcaption><span>PRECISION IN EVERY SPRAY.</span><span>For the work ahead.</span></figcaption>
+  </figure>
+  <div class="apps__grid">
+    <article class="app-card" data-i="1">
+      <div class="app-card__icon"><svg viewBox="0 0 48 48"><path d="M4 32V16h20v16"/><path d="M24 22h9l7 7v3H24z"/><circle cx="14" cy="34" r="4"/><circle cx="33" cy="34" r="4"/></svg></div>
+      <h3>Trucks &amp; Commercial Vehicles</h3>
+      <p>Heavy-duty contamination, high-cycle fleet servicing.</p>
+    </article>
+    <article class="app-card" data-i="2">
+      <div class="app-card__icon"><svg viewBox="0 0 48 48"><path d="M5 31v-6l5-2 4-7h20l4 7 5 2v6"/><path d="M14 16h20M5 28h38"/><circle cx="14" cy="33" r="4"/><circle cx="34" cy="33" r="4"/></svg></div>
+      <h3>Cars &amp; Light Duty Vehicles</h3>
+      <p>Everyday brake servicing, pad swaps and part prep.</p>
+    </article>
+    <article class="app-card" data-i="3">
+      <div class="app-card__icon"><svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="17"/><circle cx="24" cy="24" r="7"/><path d="M24 7v6M24 35v6M7 24h6M35 24h6"/></svg></div>
+      <h3>Brake Systems</h3>
+      <p>Discs, drums, callipers, pads, shoes and springs.</p>
+    </article>
+    <article class="app-card" data-i="4">
+      <div class="app-card__icon"><svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="16"/><path d="M24 8v32M8 24h32M13 13l22 22M35 13L13 35"/></svg></div>
+      <h3>Clutch Components</h3>
+      <p>Plates, pressure plates and release bearings.</p>
+    </article>
+    <article class="app-card" data-i="5">
+      <div class="app-card__icon"><svg viewBox="0 0 48 48"><path d="M31 6a10 10 0 00-9 14L8 34a4 4 0 006 6l14-14a10 10 0 0014-9l-7 4-6-3-1-6z"/></svg></div>
+      <h3>Machinery &amp; Tools</h3>
+      <p>Degrease bearings, chains, jigs and shop equipment.</p>
+    </article>
+  </div>
+</section>
+
+<!-- ================================================
+     SPECS & SAFETY
+     ================================================ -->
+<section class="pack-gallery" aria-labelledby="packTitle">
+  <div class="pack-gallery__head"><h2 id="packTitle">THE REAL DEAL.<br>EVERY DETAIL.</h2><p>A closer look at SPARK. Explore the actual packaging, features and directions.</p></div>
+  <div class="pack-gallery__grid">
+    <figure><a href="assets/reference/product-front.jpg" target="_blank" rel="noopener"><img src="assets/img/product-front.webp" width="6144" height="8160" loading="lazy" alt="Actual SPARK can, front label with brake graphic and Maximum Cleaning Power stripe"></a><figcaption><span>01 / FRONT</span><span>↗</span></figcaption></figure>
+    <figure><a href="assets/reference/product-side.jpg" target="_blank" rel="noopener"><img src="assets/img/product-side.webp" width="6144" height="8160" loading="lazy" alt="SPARK side label showing cleaning features and handling information"></a><figcaption><span>02 / FEATURES</span><span>↗</span></figcaption></figure>
+    <figure><a href="assets/reference/product-back.jpg" target="_blank" rel="noopener"><img src="assets/img/product-back.webp" width="6144" height="8160" loading="lazy" alt="SPARK rear label with directions and safety symbols"></a><figcaption><span>03 / DIRECTIONS</span><span>↗</span></figcaption></figure>
+  </div>
+</section><section class="specs" id="specs">
+  <div class="specs__inner">
+    <div class="specs__col">
+      <span class="sec-head__num">04</span>
+      <h2 class="sec-head__title">SPECS &amp;<br>SAFETY</h2>
+      <p class="sec-head__lede">Professional-grade chemistry, handled professionally. Read the can before use.</p>
+
+      <dl class="spec-list">
+        <div><dt>Net content</dt><dd>550 ml</dd></div>
+        <div><dt>Formulation</dt><dd>Non-chlorinated, low VOC</dd></div>
+        <div><dt>Residue</dt><dd>None &mdash; evaporates clean</dd></div>
+        <div><dt>Compatibility</dt><dd>Metals &amp; most surfaces</dd></div>
+        <div><dt>Application</dt><dd>Aerosol, fast-drying spray</dd></div>
+        <div><dt>Grade</dt><dd>Professional &amp; DIY</dd></div>
+      </dl>
+    </div>
+
+    <div class="specs__col specs__col--hazard">
+      <h3 class="hz-title">HANDLE WITH CARE</h3>
+      <div class="hz-grid">
+        <div class="hz">
+          <div class="hz__dia"><svg viewBox="0 0 48 48"><path d="M24 40c7 0 12-5 12-11 0-8-7-11-6-21-6 3-9 8-9 13-3-1-4-4-4-7-4 4-5 9-5 15 0 6 5 11 12 11z"/></svg></div>
+          <b>Extremely Flammable</b><span>Keep away from heat, sparks and open flame.</span>
+        </div>
+        <div class="hz">
+          <div class="hz__dia"><svg viewBox="0 0 48 48"><path d="M24 12v16M24 33v3"/></svg></div>
+          <b>Irritant</b><span>Avoid contact with eyes and skin. Use in ventilated areas.</span>
+        </div>
+        <div class="hz">
+          <div class="hz__dia"><svg viewBox="0 0 48 48"><path d="M10 34c6 2 10-2 14 0s8 2 14-2"/><path d="M22 26c-4-4-4-10 0-14 4 4 4 10 0 14z"/><path d="M30 28l-6-4"/></svg></div>
+          <b>Harmful to Aquatic Life</b><span>Do not empty into drains. Dispose of responsibly.</span>
+        </div>
+      </div>
+      <p class="hz-note">Pressurised container. Do not pierce or burn, even after use. Store below 50&deg;C. Keep out of reach of children. Always consult the product Safety Data Sheet.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================
+     CTA
+     ================================================ -->
+<section class="cta" id="cta">
+  <div class="cta__glow" aria-hidden="true"></div>
+  <div class="cta__inner">
+    <p class="cta__eyebrow">SHAKE <i>&bull;</i> SPRAY <i>&bull;</i> CLEAN</p>
+    <h2 class="cta__title">IT&rsquo;S THAT<br>EASY.</h2>
+    <p class="cta__lede">Keep your brake systems and parts in peak condition. Explore the pack details and product specifications.</p>
+    <div class="cta__actions">
+      <a class="btn btn--lg" href="assets/reference/product-back.jpg" target="_blank" rel="noopener"><span>View the product label ↗</span></a>
+      <a class="btn btn--ghost btn--lg" href="#specs"><span>Product specifications ↑</span></a>
+    </div>
+  </div>
+  <div class="cta__visual" aria-hidden="true"><img class="cta__photo" src="assets/img/spark-studio-higgsfield.webp" alt="" loading="lazy" width="1744" height="2336">
+    <div class="can can--static">
+      <div class="can__parts">
+        <div class="can__cap"><div class="cap__gloss"></div><div class="cap__ring"></div></div>
+        <div class="can__body">
+          <div class="can__shoulder"></div>
+          <div class="can__label">
+            <div class="label__brand">SPARK</div>
+            <div class="label__rule"></div>
+            <div class="label__sub">BRAKE &amp; PARTS CLEANER</div>
+            <div class="label__tag">PROFESSIONAL STRENGTH</div>
+            <ul class="label__list">
+              <li>CLEANS FAST &middot; DRIES FAST</li>
+              <li>NON-CHLORINATED</li>
+              <li>SAFE ON MOST SURFACES</li>
+              <li>LOW VOC FORMULA</li>
+            </ul>
+            <div class="label__foot">550 ml</div>
+          </div>
+          <div class="can__sheen"></div>
+          <div class="can__base"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="foot">
+  <div class="foot__row">
+    <div class="foot__brand">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1.5l2.3 6.4 6.4 2.3-6.4 2.3L12 18.9l-2.3-6.4L3.3 10.2l6.4-2.3z"/></svg>
+      <span>SPARK</span>
+    </div>
+    <p>Brake &amp; Parts Cleaner &middot; Professional Strength &middot; 550 ml</p>
+    <p class="foot__legal">&copy; <span id="yr">2026</span> Spark. For professional and DIY automotive use. Read the label before use.</p>
+  </div>
+</footer>
+
+<!-- Interactive Pack Inspection Modal Lightbox -->
+<div class="pack-modal" id="packModal" aria-hidden="true" role="dialog" aria-modal="true">
+  <div class="pack-modal__content">
+    <button class="pack-modal__close" id="packModalClose" aria-label="Close modal">&times;</button>
+    <img id="packModalImg" src="" alt="SPARK Product packaging enlarged view">
+    <div class="pack-modal__caption" id="packModalCaption"></div>
+  </div>
+</div>
+
+<script src="assets/vendor/gsap.min.js"></script>
+<script src="assets/vendor/ScrollTrigger.min.js"></script>
+<script src="assets/vendor/lenis.min.js"></script>
+<script src="js/main.js"></script>
+<script type="module" src="js/experience.js"></script>
+</body>
+</html>

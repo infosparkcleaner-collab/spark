@@ -1,0 +1,445 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Spark Brake &amp; Parts Cleaner — Professional Strength, 550 ml</title>
+<meta name="description" content="Spark is a professional-strength, non-chlorinated brake and parts cleaner. Cleans fast, dries fast, leaves no residue. Low VOC formula, 550 ml aerosol. Trade and distributor enquiries welcome.">
+<meta name="theme-color" content="#ffffff">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+
+<meta property="og:type" content="product">
+<meta property="og:title" content="Spark Brake &amp; Parts Cleaner — Professional Strength">
+<meta property="og:description" content="Non-chlorinated, low VOC, no residue. 550 ml professional aerosol for brake systems, clutch components and workshop machinery.">
+<meta property="og:image" content="assets/img/spark-hands-start.webp">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/site.css">
+<link rel="preload" as="image" href="assets/img/spark-can-cutout.webp" fetchpriority="high">
+<link rel="preload" as="image" href="assets/img/product-front.webp">
+<link rel="preload" as="image" href="assets/img/product-side.webp">
+<link rel="preload" as="image" href="assets/img/product-back.webp">
+<script type="importmap">{"imports":{"three":"./assets/vendor/three.module.js"}}</script>
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="masthead" id="masthead">
+  <div class="masthead__in">
+    <a class="brand" href="#top" aria-label="Spark, home">
+      <svg viewBox="0 0 48 48" aria-hidden="true" focusable="false"><path d="m24 5 5 14 14 5-14 5-5 14-5-14L5 24l14-5Z"/></svg>
+      <span class="brand__name">Spark</span>
+      <span class="brand__line">Brake &amp; Parts Cleaner</span>
+    </a>
+
+    <nav class="menu" id="menu" aria-label="Main">
+      <a href="#action">In action</a>
+      <a href="#performance">Performance</a>
+      <a href="#use">How to use</a>
+      <a href="#applications">Where it&rsquo;s used</a>
+      <a href="#specs">Specifications</a>
+      <a class="menu__cta button button--solid" href="#contact">Send an enquiry</a>
+    </nav>
+
+    <a class="button button--solid masthead__cta" href="#contact">Send an enquiry</a>
+
+    <button class="burger" id="burger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="menu">
+      <span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<main id="main">
+
+<!-- ───────────────────────── stage: the can ─────────────────────────
+     One pinned sequence. The can is modelled in WebGL and turns as you
+     scroll through four beats. Without WebGL, or under reduced motion,
+     or on a small screen, the same four beats read as ordinary stacked
+     content with the product photograph.
+------------------------------------------------------------------- -->
+<section class="stage" id="top">
+  <div class="stage__pin">
+    <div class="stage__grid">
+
+      <div class="stage__copy">
+        <p class="stage__kicker" data-reveal="1">Professional strength &middot; 550 ml aerosol</p>
+        <h1 class="stage__title" data-reveal="2">Brake&nbsp;&amp; parts cleaner that leaves nothing behind.</h1>
+
+        <div class="beats">
+          <div class="beat is-on" data-beat="0" data-reveal="3">
+            <p class="beat__text">Spark cuts brake fluid, grease, oil and road dirt in a single pass, then evaporates clean. Non-chlorinated, low VOC, and safe on metals and most surfaces.</p>
+            <div class="beat__actions">
+              <a class="button button--solid button--lg" href="#contact">Send an enquiry</a>
+              <a class="button button--line button--lg" href="#specs">Read the specifications</a>
+            </div>
+          </div>
+
+          <div class="beat" data-beat="1">
+            <h2 class="beat__head">The cap lifts clear</h2>
+            <p class="beat__text">Underneath is the precision valve. Full pressure from the first press, with a jet narrow enough to aim between a pad and a disc.</p>
+          </div>
+
+          <div class="beat" data-beat="2">
+            <h2 class="beat__head">Everything is on the panel</h2>
+            <p class="beat__text">Cleans fast, dries fast. No residue, non-chlorinated. Safe on metals and most surfaces, with a low VOC formula.</p>
+          </div>
+
+          <div class="beat" data-beat="3">
+            <h2 class="beat__head">550 ml of working stock</h2>
+            <p class="beat__text">A heavy-duty steel aerosol sized for a working bay rather than a shelf. Professional and DIY use.</p>
+          </div>
+        </div>
+
+        <dl class="factrow" data-reveal="4">
+          <div class="factrow__item"><dt>Net content</dt><dd>550 ml</dd></div>
+          <div class="factrow__item"><dt>Formula</dt><dd>Non-chlorinated</dd></div>
+          <div class="factrow__item"><dt>Residue</dt><dd>None</dd></div>
+          <div class="factrow__item"><dt>VOC</dt><dd>Low</dd></div>
+        </dl>
+      </div>
+
+      <figure class="stage__plate" data-reveal="2">
+        <div class="stage__canvas" id="canHost"></div>
+        <img class="stage__photo" id="canPhoto"
+             src="assets/img/spark-can-cutout.webp" width="1400" height="1875"
+             alt="Spark Brake &amp; Parts Cleaner, a black 550 ml aerosol can with a red cap, photographed against a plain background."
+             fetchpriority="high" decoding="async">
+        <figcaption class="stage__grab">Drag the can to turn it</figcaption>
+      </figure>
+
+      <nav class="stage__rail" aria-label="Product tour">
+        <span class="stage__progress" aria-hidden="true"><i id="stageProgress"></i></span>
+        <ol class="stage__steps">
+          <li><button type="button" data-goto="0" class="is-on" aria-current="true">The can</button></li>
+          <li><button type="button" data-goto="1">Precision valve</button></li>
+          <li><button type="button" data-goto="2">The formula</button></li>
+          <li><button type="button" data-goto="3">The pack</button></li>
+        </ol>
+      </nav>
+
+    </div>
+  </div>
+</section>
+
+<!-- ───────────────────────── video ───────────────────────── -->
+<section class="section action" id="action">
+  <div class="wrap action__in">
+    <div class="action__text">
+      <h2 class="h2">See it in the bay</h2>
+      <p class="lede">Cap off, nozzle down, one pass across the disc. No soaking, no wiping, and no waiting for the part to dry before it goes back on the car.</p>
+      <ul class="ticks">
+        <li>Sprays at full pressure from the first press</li>
+        <li>Flushes contamination off the disc face and calliper</li>
+        <li>Flashes off clean, so parts are ready to refit</li>
+      </ul>
+      <p class="note">Filmed demonstration. Results vary with the level and type of contamination.</p>
+    </div>
+
+    <figure class="player" id="player">
+      <video class="player__video" id="filmVideo"
+             muted loop playsinline preload="none"
+             poster="assets/img/spark-hands-start.webp"
+             width="960" height="960"
+             data-src="assets/video/spark-hand-demo.mp4"
+             aria-label="Gloved hands lift the cap from a Spark can and spray a brake disc in a workshop."></video>
+
+      <figcaption class="player__bar">
+        <button class="player__btn" id="filmPlay" type="button" aria-label="Pause video" data-state="playing">
+          <svg class="i-pause" viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="5" width="3.5" height="14" rx="1"/><rect x="13.5" y="5" width="3.5" height="14" rx="1"/></svg>
+          <svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg>
+        </button>
+        <button class="player__btn" id="filmSound" type="button" aria-label="Turn sound on" aria-pressed="false">
+          <svg class="i-muted" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5h3.5L12 5.5v13L7.5 14.5H4z"/><path class="s" d="M16 9.5l5 5M21 9.5l-5 5"/></svg>
+          <svg class="i-sound" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5h3.5L12 5.5v13L7.5 14.5H4z"/><path class="s" d="M15.5 9a4 4 0 010 6M18 6.5a7.5 7.5 0 010 11"/></svg>
+        </button>
+        <span class="player__label">Workshop demonstration</span>
+      </figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ───────────────────────── performance ───────────────────────── -->
+<section class="section band" id="performance">
+  <div class="wrap">
+    <header class="secthead" data-rise>
+      <h2 class="h2">Why it performs</h2>
+      <p class="lede">Four things the formula is built to do, taken straight from the pack.</p>
+    </header>
+
+    <div class="perf">
+      <article class="perf__item" data-rise>
+        <h3>Removes brake fluid, grease, oil and dirt</h3>
+        <p>A strong solvent blend that lifts the contamination brake work leaves behind, so pads and discs bed in against clean metal.</p>
+      </article>
+      <article class="perf__item" data-rise>
+        <h3>Cleans fast, dries fast</h3>
+        <p>Flashes off quickly and leaves a dry surface. Less waiting between cleaning the part and putting it back on the vehicle.</p>
+      </article>
+      <article class="perf__item" data-rise>
+        <h3>Safe on metals and most surfaces</h3>
+        <p>Formulated for brake systems, clutch components and metal parts. Check the pack for compatibility before use on plastics or painted work.</p>
+      </article>
+      <article class="perf__item perf__item--eco" data-rise>
+        <h3>Low VOC, non-chlorinated</h3>
+        <p>A low VOC, non-chlorinated formula as specified on the pack &mdash; professional cleaning power with a lighter solvent load.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ───────────────────────── how to use ───────────────────────── -->
+<section class="section" id="use">
+  <div class="wrap">
+    <header class="secthead" data-rise>
+      <h2 class="h2">Shake. Spray. Clean.</h2>
+      <p class="lede">Three steps, about a minute. Always read the directions and safety information on the can before use.</p>
+    </header>
+
+    <div class="steps">
+      <ol class="steps__list">
+        <li class="step" data-rise>
+          <span class="step__n" aria-hidden="true">1</span>
+          <h3>Shake the can</h3>
+          <p>Shake well before use to bring the formula up to pressure. Work in a well-ventilated area, away from heat, sparks and open flame.</p>
+        </li>
+        <li class="step" data-rise>
+          <span class="step__n" aria-hidden="true">2</span>
+          <h3>Spray the part</h3>
+          <p>Hold upright, remove the cap and spray the part directly from roughly 20&nbsp;cm. Cover the contaminated area in one steady pass.</p>
+        </li>
+        <li class="step" data-rise>
+          <span class="step__n" aria-hidden="true">3</span>
+          <h3>Let it clean</h3>
+          <p>The solvent carries contamination off the part and evaporates. No wiping needed. Let the part dry fully before refitting.</p>
+        </li>
+      </ol>
+
+      <figure class="steps__figure" data-rise>
+        <img src="assets/img/product-application.webp" width="1200" height="675" loading="lazy" decoding="async"
+             alt="A gloved hand sprays Spark onto an oily gearbox casing over a drip tray in a workshop.">
+        <figcaption>Degreasing a gearbox casing before strip-down</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- ───────────────────────── applications ───────────────────────── -->
+<section class="section band" id="applications">
+  <div class="wrap">
+    <header class="secthead" data-rise>
+      <h2 class="h2">Where it&rsquo;s used</h2>
+      <p class="lede">One can covers most of what comes through a workshop, from fleet servicing to the home garage.</p>
+    </header>
+
+    <div class="matrix__scroll" data-rise tabindex="0" role="region" aria-label="Applications table">
+      <table class="matrix">
+        <caption class="vh">Applications for Spark Brake &amp; Parts Cleaner, with typical parts and the contamination it removes</caption>
+        <thead>
+          <tr><th scope="col">Application</th><th scope="col">Typical parts</th><th scope="col">What it cuts</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">Brake systems</th>
+            <td>Discs, drums, callipers, pads, shoes, springs</td>
+            <td>Brake fluid, pad dust, grease</td>
+          </tr>
+          <tr>
+            <th scope="row">Clutch components</th>
+            <td>Plates, pressure plates, release bearings</td>
+            <td>Oil film, friction dust</td>
+          </tr>
+          <tr>
+            <th scope="row">Cars &amp; light vehicles</th>
+            <td>Everyday servicing, pad swaps, part prep</td>
+            <td>Road grime, light oil</td>
+          </tr>
+          <tr>
+            <th scope="row">Trucks &amp; commercial fleet</th>
+            <td>High-cycle servicing, heavy-duty assemblies</td>
+            <td>Heavy contamination, built-up grease</td>
+          </tr>
+          <tr>
+            <th scope="row">Machinery &amp; tools</th>
+            <td>Bearings, chains, jigs, shop equipment</td>
+            <td>Old lubricant, shop dirt</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ───────────────────────── specs ───────────────────────── -->
+<section class="section band" id="specs">
+  <div class="wrap">
+    <header class="secthead" data-rise>
+      <h2 class="h2">Specifications &amp; safety</h2>
+      <p class="lede">Professional-grade chemistry, handled professionally. The can carries the full directions &mdash; read them before use.</p>
+    </header>
+
+    <div class="specgrid" data-rise>
+      <table class="spec">
+        <caption class="vh">Product specifications</caption>
+        <tbody>
+          <tr><th scope="row">Product</th><td>Brake &amp; parts cleaner, aerosol</td></tr>
+          <tr><th scope="row">Net content</th><td>550 ml</td></tr>
+          <tr><th scope="row">Formulation</th><td>Non-chlorinated, low VOC</td></tr>
+          <tr><th scope="row">Residue</th><td>None &mdash; evaporates clean</td></tr>
+          <tr><th scope="row">Compatibility</th><td>Metals and most surfaces</td></tr>
+          <tr><th scope="row">Application</th><td>Direct spray, fast drying</td></tr>
+          <tr><th scope="row">Grade</th><td>Professional and DIY</td></tr>
+          <tr><th scope="row">Storage</th><td>Below 50&nbsp;&deg;C, away from direct sunlight</td></tr>
+        </tbody>
+      </table>
+
+      <div class="safety">
+        <h3 class="h3">Handling</h3>
+        <ul class="safety__list">
+          <li>
+            <strong>Extremely flammable</strong>
+            <span>Keep away from heat, sparks, hot surfaces and open flame. Do not smoke while using.</span>
+          </li>
+          <li>
+            <strong>Irritant</strong>
+            <span>Avoid contact with eyes and skin. Use only in a well-ventilated area and avoid breathing the spray.</span>
+          </li>
+          <li>
+            <strong>Harmful to aquatic life</strong>
+            <span>Do not empty into drains. Dispose of the container and contents responsibly.</span>
+          </li>
+        </ul>
+        <p class="note">Pressurised container: do not pierce or burn, even after use. Keep out of reach of children. Always consult the product Safety Data Sheet before use.</p>
+      </div>
+    </div>
+
+    <div class="labelref" data-rise>
+      <h3 class="labelref__title">Read the label</h3>
+      <p class="labelref__note">Reference photographs of the physical can. Select one to read the panel at full size &mdash; the can itself always carries the definitive directions.</p>
+      <div class="labelref__row">
+        <figure class="labelref__item">
+          <button type="button" class="pack__btn" data-full="assets/img/product-front.webp" data-caption="Front panel — Spark Brake &amp; Parts Cleaner, professional strength, 550 ml">
+            <img src="assets/img/product-front.webp" width="1200" height="1594" loading="lazy" decoding="async"
+                 alt="Front panel of the Spark can, showing the brand mark, the professional strength stripe and the brake graphic.">
+          </button>
+          <figcaption>Front panel</figcaption>
+        </figure>
+        <figure class="labelref__item">
+          <button type="button" class="pack__btn" data-full="assets/img/product-side.webp" data-caption="Features panel — what the formula removes and how it behaves">
+            <img src="assets/img/product-side.webp" width="1200" height="1594" loading="lazy" decoding="async"
+                 alt="Features panel of the Spark can, listing what the formula removes and how it behaves.">
+          </button>
+          <figcaption>Features panel</figcaption>
+        </figure>
+        <figure class="labelref__item">
+          <button type="button" class="pack__btn" data-full="assets/img/product-back.webp" data-caption="Directions panel — instructions for use and safety symbols">
+            <img src="assets/img/product-back.webp" width="1200" height="1594" loading="lazy" decoding="async"
+                 alt="Directions panel of the Spark can, showing the instructions for use and the safety symbols.">
+          </button>
+          <figcaption>Directions &amp; safety</figcaption>
+        </figure>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ───────────────────────── contact ───────────────────────── -->
+<section class="section contact" id="contact">
+  <div class="wrap contact__in">
+    <div class="contact__text">
+      <h2 class="h2">Talk to us about Spark</h2>
+      <p class="lede">Distributor terms, bulk pricing, or a technical question about a specific application &mdash; send the details and we&rsquo;ll come back to you.</p>
+      <dl class="contact__meta">
+        <div><dt>Enquiry types</dt><dd>Distribution, bulk supply, technical, general</dd></div>
+        <div><dt>Typical response</dt><dd>Within two working days</dd></div>
+      </dl>
+    </div>
+
+    <form class="form" id="enquiryForm" data-rise novalidate>
+      <div class="form__row">
+        <div class="field">
+          <label for="f-name">Name <abbr title="required">*</abbr></label>
+          <input id="f-name" name="name" type="text" autocomplete="name" required aria-describedby="e-name">
+          <p class="field__error" id="e-name" hidden>Enter your name.</p>
+        </div>
+        <div class="field">
+          <label for="f-company">Company or workshop</label>
+          <input id="f-company" name="company" type="text" autocomplete="organization">
+        </div>
+      </div>
+
+      <div class="form__row">
+        <div class="field">
+          <label for="f-email">Email <abbr title="required">*</abbr></label>
+          <input id="f-email" name="email" type="email" autocomplete="email" required aria-describedby="e-email">
+          <p class="field__error" id="e-email" hidden>Enter an email address we can reply to.</p>
+        </div>
+        <div class="field">
+          <label for="f-phone">Phone</label>
+          <input id="f-phone" name="phone" type="tel" autocomplete="tel">
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="f-type">What is your enquiry about?</label>
+        <select id="f-type" name="enquiryType">
+          <option value="distributor">Becoming a distributor</option>
+          <option value="bulk">Bulk or trade order</option>
+          <option value="technical">Technical question</option>
+          <option value="other" selected>Something else</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="f-message">Message <abbr title="required">*</abbr></label>
+        <textarea id="f-message" name="message" rows="5" required aria-describedby="e-message"></textarea>
+        <p class="field__error" id="e-message" hidden>Tell us what you need, so we can point it to the right person.</p>
+      </div>
+
+      <div class="form__foot">
+        <button class="button button--solid button--lg" type="submit">Send enquiry</button>
+        <p class="form__small">We&rsquo;ll only use these details to answer your enquiry.</p>
+      </div>
+
+      <p class="form__done" id="formDone" role="status" hidden></p>
+    </form>
+  </div>
+</section>
+
+</main>
+
+<footer class="foot">
+  <div class="wrap foot__in">
+    <a class="brand brand--foot" href="#top" aria-label="Spark, back to top">
+      <svg viewBox="0 0 48 48" aria-hidden="true" focusable="false"><path d="m24 5 5 14 14 5-14 5-5 14-5-14L5 24l14-5Z"/></svg>
+      <span class="brand__name">Spark</span>
+    </a>
+    <p class="foot__desc">Brake &amp; parts cleaner. Professional strength, 550 ml. Non-chlorinated, low VOC.</p>
+    <nav class="foot__links" aria-label="Footer">
+      <a href="#performance">Performance</a>
+      <a href="#applications">Where it&rsquo;s used</a>
+      <a href="#specs">Specifications</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <p class="foot__legal">&copy; <span id="year">2026</span> Spark. For professional and DIY automotive use. Read the label before use.</p>
+  </div>
+</footer>
+
+<div class="lightbox" id="lightbox" hidden>
+  <div class="lightbox__panel" role="dialog" aria-modal="true" aria-labelledby="lightboxCap">
+    <button class="lightbox__close" id="lightboxClose" type="button" aria-label="Close">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+    <img id="lightboxImg" src="" alt="">
+    <p class="lightbox__cap" id="lightboxCap"></p>
+  </div>
+</div>
+
+<script src="assets/vendor/gsap.min.js" defer></script>
+<script src="assets/vendor/ScrollTrigger.min.js" defer></script>
+<script src="js/site.js" defer></script>
+<script type="module" src="js/stage.js"></script>
+</body>
+</html>

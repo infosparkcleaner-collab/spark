@@ -1,0 +1,10 @@
+# Normalise line endings so the repo stays clean across Windows and Unix
+* text=auto eol=lf
+
+# Binary assets — never touch these
+*.webp binary
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.mp4  binary
+*.woff2 binary

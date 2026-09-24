@@ -1,0 +1,22 @@
+# Browser-automation artefacts from local testing
+.playwright-mcp/
+
+# Never vendored here, but keep it out by default
+node_modules/
+
+# Machine-specific Claude Code permissions
+.claude/settings.local.json
+
+# OS and editor noise
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+.vscode/
+.idea/
+
+# Local agent tooling — dev environment, not part of the website
+.agents/
+.claude/
+.codex/
+.mcp.json
