@@ -1,32 +1,37 @@
 /**
  * Spark enquiry endpoint
  * ----------------------
- * Deployed as a Google Apps Script web app. The form POSTs JSON here and
- * this does three things:
+ * Paste this whole file into the Apps Script editor, deploy as a web app,
+ * and it works. The sheet id is set below, so no Script Properties are
+ * needed to start recording enquiries.
  *
- *   1. appends a row to the enquiry sheet
- *   2. sends a confirmation to the person who enquired   (Mailgun)
- *   3. sends a notification to the admin, reply-to the enquirer (Mailgun)
+ * Email is optional and stays off until you configure it. Add these in
+ * Project Settings > Script Properties whenever Mailgun is ready and mail
+ * starts sending with no change to this file:
  *
- * Nothing secret lives in this file. Every value is read from Script
- * Properties, so the repository never carries the Mailgun key.
- *
- *   Extensions > Apps Script > Project Settings > Script Properties
- *
- *   MAILGUN_KEY      your Mailgun private API key
- *   MAILGUN_DOMAIN   the sending domain, e.g. mg.example.com
+ *   MAILGUN_KEY      Mailgun private API key
+ *   MAILGUN_DOMAIN   sending domain, e.g. mg.example.com
  *   MAILGUN_REGION   us | eu            (default us)
  *   MAIL_FROM        Spark <enquiries@mg.example.com>
- *   ADMIN_EMAIL      ankit.migosys@gmail.com
- *   SHEET_ID         the spreadsheet id from its URL
- *   SHEET_TAB        tab name to append to (default Enquiries)
- *   FORM_TOKEN       shared string the form sends; blocks drive-by posts
+ *   ADMIN_EMAIL      where the notification goes
+ *
+ * The Mailgun key belongs in Script Properties, never in this file.
  *
  * Deploy > New deployment > Web app
- *   Execute as:       Me
- *   Who has access:   Anyone
- * Copy the /exec URL into ENQUIRY_ENDPOINT in js/site.js.
+ *   Execute as:     Me
+ *   Who has access: Anyone
  */
+
+/* ========================= CONFIG ========================= */
+
+var SHEET_ID = '14QeG934ncsTFJbg34De3kirlRwQDeZgbfiewtuR7pEs';
+var SHEET_TAB = 'Enquiries';
+
+/* Set the same string as ENQUIRY_TOKEN in js/site.js to stop drive-by
+   posting. Left empty, no token is required. */
+var FORM_TOKEN = '';
+
+/* ========================================================== */
 
 var PROPS = PropertiesService.getScriptProperties();
 
@@ -34,19 +39,19 @@ var HEADERS = [
   'Received', 'Name', 'Email', 'Phone', 'Company', 'Enquiry type', 'Message', 'Source'
 ];
 
-/** Apps Script has no OPTIONS hook, so the form posts text/plain to stay a
- *  simple request and avoid a preflight the platform cannot answer. */
+/** The form posts text/plain so the request stays "simple". Apps Script has
+ *  no OPTIONS handler and cannot answer the preflight an application/json
+ *  body would trigger. The body is JSON either way. */
 function doPost(e) {
   try {
     var body = JSON.parse((e && e.postData && e.postData.contents) || '{}');
 
-    var expected = PROPS.getProperty('FORM_TOKEN');
-    if (expected && body.token !== expected) {
+    if (FORM_TOKEN && body.token !== FORM_TOKEN) {
       return reply(403, { ok: false, error: 'bad token' });
     }
 
     // Bots fill hidden fields; people never see this one.
-    if (body.website) return reply(200, { ok: true });
+    if (body.website) return reply(200, { ok: true, skipped: 'honeypot' });
 
     var enquiry = {
       name: clean(body.name, 120),
@@ -64,83 +69,57 @@ function doPost(e) {
 
     appendRow(enquiry);
 
-    // The row is the record of truth. If Mailgun is down the enquiry is
-    // still captured, so mail failures are reported but not fatal.
-    var mail = { confirmation: false, notification: false, error: null };
-    try {
-      mail.confirmation = sendConfirmation(enquiry);
-      mail.notification = sendNotification(enquiry);
-    } catch (mailErr) {
-      mail.error = String(mailErr);
-      console.error('mail failed', mailErr);
-    }
-
-    return reply(200, { ok: true, mail: mail });
+    // The row is the record of truth. Mail is an extra on top, so a mail
+    // fault is reported but never loses the enquiry.
+    return reply(200, { ok: true, mail: sendMail(enquiry) });
 
   } catch (err) {
     console.error('enquiry failed', err);
-    // The reason is returned as well as logged. These are configuration
-    // faults such as a missing property or an unauthorised sheet, never
-    // anything secret, and without them this is undiagnosable from outside.
     return reply(500, {
       ok: false,
       error: 'could not record the enquiry',
-      reason: String(err && err.message ? err.message : err).slice(0, 300)
+      reason: message(err)
     });
   }
 }
 
-/** A GET is only ever a health check — never returns stored data.
- *  ?check=1 reports which properties are set, as booleans only. It never
- *  returns a value, so the Mailgun key cannot leak through it. */
+/** A GET is only a health check. ?check=1 reports configuration state as
+ *  booleans and never returns a stored value, so no key can leak. */
 function doGet(e) {
-  var check = e && e.parameter && e.parameter.check;
-  if (!check) return reply(200, { ok: true, service: 'spark-enquiry' });
-
-  var forSheet = ['SHEET_ID'];
-  var forMail = ['MAILGUN_KEY', 'MAILGUN_DOMAIN', 'MAIL_FROM', 'ADMIN_EMAIL'];
-  var optional = ['MAILGUN_REGION', 'SHEET_TAB', 'FORM_TOKEN'];
-  var set = {};
-
-  forSheet.concat(forMail, optional).forEach(function (k) {
-    set[k] = !!PROPS.getProperty(k);
-  });
-
-  var missingSheet = forSheet.filter(function (k) { return !set[k]; });
-  var missingMail = forMail.filter(function (k) { return !set[k]; });
-
-  // Prove the sheet is reachable without writing to it.
-  var sheet = 'not checked';
-  if (set.SHEET_ID) {
-    try {
-      sheet = 'ok: "' + SpreadsheetApp.openById(PROPS.getProperty('SHEET_ID')).getName() + '"';
-    } catch (err) {
-      sheet = 'cannot open: ' + String(err).slice(0, 140);
-    }
+  if (!(e && e.parameter && e.parameter.check)) {
+    return reply(200, { ok: true, service: 'spark-enquiry' });
   }
 
+  var sheet, sheetReady = false;
+  try {
+    sheet = 'ok: "' + SpreadsheetApp.openById(SHEET_ID).getName() + '"';
+    sheetReady = true;
+  } catch (err) {
+    sheet = 'cannot open: ' + message(err);
+  }
+
+  var need = ['MAILGUN_KEY', 'MAILGUN_DOMAIN', 'MAIL_FROM', 'ADMIN_EMAIL'];
+  var set = {};
+  need.concat(['MAILGUN_REGION']).forEach(function (k) { set[k] = !!PROPS.getProperty(k); });
+  var missingMail = need.filter(function (k) { return !set[k]; });
+
   return reply(200, {
-    ok: missingSheet.length === 0,          // the row is what must work
-    sheetReady: missingSheet.length === 0,
+    ok: sheetReady,
+    sheetReady: sheetReady,
+    sheet: sheet,
+    tab: SHEET_TAB,
     mailReady: missingMail.length === 0,
-    missingForSheet: missingSheet,
     missingForMail: missingMail,
-    propertiesSet: set,
-    sheet: sheet
+    mailProperties: set
   });
 }
 
 /* ---------------------------------------------------------------- sheet */
 
 function appendRow(enquiry) {
-  var id = must('SHEET_ID');
-  var tab = PROPS.getProperty('SHEET_TAB') || 'Enquiries';
-  var book = SpreadsheetApp.openById(id);
-  var sheet = book.getSheetByName(tab);
+  var book = SpreadsheetApp.openById(SHEET_ID);
+  var sheet = book.getSheetByName(SHEET_TAB) || book.insertSheet(SHEET_TAB);
 
-  if (!sheet) {
-    sheet = book.insertSheet(tab);
-  }
   if (sheet.getLastRow() === 0) {
     sheet.appendRow(HEADERS);
     sheet.getRange(1, 1, 1, HEADERS.length).setFontWeight('bold');
@@ -161,9 +140,72 @@ function appendRow(enquiry) {
 
 /* ----------------------------------------------------------------- mail */
 
-function mailgun(fields) {
-  var key = must('MAILGUN_KEY');
-  var domain = must('MAILGUN_DOMAIN');
+/** Sends nothing and says why until Mailgun is configured. */
+function sendMail(enquiry) {
+  var key = PROPS.getProperty('MAILGUN_KEY');
+  var domain = PROPS.getProperty('MAILGUN_DOMAIN');
+  var from = PROPS.getProperty('MAIL_FROM');
+  var admin = PROPS.getProperty('ADMIN_EMAIL');
+
+  if (!key || !domain || !from || !admin) {
+    return { sent: false, skipped: 'mailgun not configured' };
+  }
+
+  var out = { sent: false, confirmation: false, notification: false, error: null };
+  try {
+    mailgun(key, domain, {
+      from: from,
+      to: enquiry.name + ' <' + enquiry.email + '>',
+      subject: 'We have your enquiry — Spark Brake & Parts Cleaner',
+      text: [
+        'Hi ' + enquiry.name + ',',
+        '',
+        'Thanks for getting in touch about Spark. Your enquiry is with us and',
+        'we usually reply within two working days.',
+        '',
+        line('Enquiry', enquiry.type),
+        line('Company', enquiry.company),
+        line('Phone', enquiry.phone),
+        '',
+        enquiry.message,
+        '',
+        '--',
+        'Spark Brake & Parts Cleaner',
+        'Professional strength, 550 ml. Non-chlorinated, low VOC.'
+      ].filter(notNull).join('\n')
+    });
+    out.confirmation = true;
+
+    mailgun(key, domain, {
+      from: from,
+      to: admin,
+      'h:Reply-To': enquiry.name + ' <' + enquiry.email + '>',
+      subject: 'Spark enquiry — ' + enquiry.name + (enquiry.company ? ' (' + enquiry.company + ')' : ''),
+      text: [
+        'New enquiry from the Spark site. Reply to this mail to answer them directly.',
+        '',
+        line('Name', enquiry.name),
+        line('Email', enquiry.email),
+        line('Phone', enquiry.phone),
+        line('Company', enquiry.company),
+        line('Enquiry', enquiry.type),
+        line('Page', enquiry.source),
+        '',
+        'Message:',
+        enquiry.message
+      ].filter(notNull).join('\n')
+    });
+    out.notification = true;
+    out.sent = true;
+
+  } catch (err) {
+    out.error = message(err);
+    console.error('mail failed', err);
+  }
+  return out;
+}
+
+function mailgun(key, domain, fields) {
   var host = (PROPS.getProperty('MAILGUN_REGION') || 'us').toLowerCase() === 'eu'
     ? 'api.eu.mailgun.net'
     : 'api.mailgun.net';
@@ -177,57 +219,9 @@ function mailgun(fields) {
 
   var code = res.getResponseCode();
   if (code < 200 || code >= 300) {
-    throw new Error('Mailgun ' + code + ': ' + res.getContentText());
+    throw new Error('Mailgun ' + code + ': ' + res.getContentText().slice(0, 200));
   }
   return true;
-}
-
-function sendConfirmation(enquiry) {
-  return mailgun({
-    from: must('MAIL_FROM'),
-    to: enquiry.name + ' <' + enquiry.email + '>',
-    subject: 'We have your enquiry — Spark Brake & Parts Cleaner',
-    text: [
-      'Hi ' + enquiry.name + ',',
-      '',
-      'Thanks for getting in touch about Spark. Your enquiry is with us and',
-      'we usually reply within two working days.',
-      '',
-      'What you sent us:',
-      '',
-      wrapField('Enquiry', enquiry.type),
-      wrapField('Company', enquiry.company),
-      wrapField('Phone', enquiry.phone),
-      '',
-      enquiry.message,
-      '',
-      '--',
-      'Spark Brake & Parts Cleaner',
-      'Professional strength, 550 ml. Non-chlorinated, low VOC.'
-    ].filter(function (l) { return l !== null; }).join('\n')
-  });
-}
-
-function sendNotification(enquiry) {
-  return mailgun({
-    from: must('MAIL_FROM'),
-    to: must('ADMIN_EMAIL'),
-    'h:Reply-To': enquiry.name + ' <' + enquiry.email + '>',
-    subject: 'Spark enquiry — ' + enquiry.name + (enquiry.company ? ' (' + enquiry.company + ')' : ''),
-    text: [
-      'New enquiry from the Spark site. Reply to this mail to answer them directly.',
-      '',
-      wrapField('Name', enquiry.name),
-      wrapField('Email', enquiry.email),
-      wrapField('Phone', enquiry.phone),
-      wrapField('Company', enquiry.company),
-      wrapField('Enquiry', enquiry.type),
-      wrapField('Page', enquiry.source),
-      '',
-      'Message:',
-      enquiry.message
-    ].filter(function (l) { return l !== null; }).join('\n')
-  });
 }
 
 /* ---------------------------------------------------------------- utils */
@@ -240,14 +234,16 @@ function isEmail(v) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v);
 }
 
-function wrapField(label, value) {
+function line(label, value) {
   return value ? label + ': ' + value : null;
 }
 
-function must(name) {
-  var v = PROPS.getProperty(name);
-  if (!v) throw new Error('Missing script property: ' + name);
-  return v;
+function notNull(v) {
+  return v !== null;
+}
+
+function message(err) {
+  return String(err && err.message ? err.message : err).slice(0, 300);
 }
 
 function reply(status, payload) {
@@ -257,8 +253,10 @@ function reply(status, payload) {
     .setMimeType(ContentService.MimeType.JSON);
 }
 
-/* Writes one row and sends nothing. Use this while Mailgun is still to be
-   set up: it also triggers the Sheets permission prompt. */
+/* ----------------------------------------------------------------- test */
+
+/** Run this once from the editor. It writes one row, sends nothing, and
+ *  triggers the permission prompt Google shows the first time. */
 function testSheet() {
   appendRow({
     name: 'Test row',
@@ -269,15 +267,17 @@ function testSheet() {
     message: 'Written by testSheet(). Safe to delete.',
     source: 'testSheet()'
   });
-  return 'row written to "' + SpreadsheetApp.openById(must('SHEET_ID')).getName() + '"';
+  return 'row written to "' + SpreadsheetApp.openById(SHEET_ID).getName() + '"';
 }
 
-/* Run once from the editor to check the properties and mail path without
-   going near the form. It writes a row and sends both messages. */
+/** Once Mailgun is configured, this writes a row and sends both messages. */
 function selfTest() {
+  var admin = PROPS.getProperty('ADMIN_EMAIL');
+  if (!admin) throw new Error('Set ADMIN_EMAIL in Script Properties first');
+
   var enquiry = {
     name: 'Test Enquiry',
-    email: must('ADMIN_EMAIL'),
+    email: admin,
     phone: '',
     company: 'Self test',
     type: 'technical',
@@ -285,7 +285,5 @@ function selfTest() {
     source: 'selfTest()'
   };
   appendRow(enquiry);
-  sendConfirmation(enquiry);
-  sendNotification(enquiry);
-  return 'row written, both mails sent';
+  return sendMail(enquiry);
 }
