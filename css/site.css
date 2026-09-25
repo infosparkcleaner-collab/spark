@@ -165,3 +165,7 @@ button{cursor:pointer}table{border-collapse:collapse;width:100%}
   .stage__size{top:14px;right:16px;font-size:1.15rem}
   .stage__grab{bottom:8px}
 }
+
+/* Bot trap. Off-screen rather than display:none, which some bots skip,
+   and out of the tab order so nobody using a keyboard ever lands on it. */
+.hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}

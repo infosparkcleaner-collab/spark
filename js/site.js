@@ -7,6 +7,11 @@
 (function () {
   'use strict';
 
+  /* Paste the Apps Script /exec URL here once the web app is deployed.
+     Empty means the form still validates and confirms, but sends nothing. */
+  var ENQUIRY_ENDPOINT = '';
+  var ENQUIRY_TOKEN = '';
+
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   /* Releases the hero's one load sequence. Next frame, so the first paint
@@ -215,9 +220,38 @@
      *     body: JSON.stringify(data)
      *   }).then(function (r) { if (!r.ok) throw new Error(r.status); });
      */
+    /* Posts the enquiry to the Apps Script web app, which writes the row to
+       the sheet and sends both mails through Mailgun. The Mailgun key lives
+       in that script's properties, never here.
+
+       text/plain keeps this a simple request: Apps Script cannot answer the
+       CORS preflight that an application/json body would trigger. The script
+       reads the body with JSON.parse regardless. */
     var sendEnquiry = function (data) {
-      if (window.console && console.info) console.info('[spark] enquiry captured (not yet sent)', data);
-      return Promise.resolve();
+      if (!ENQUIRY_ENDPOINT) {
+        if (window.console && console.info) {
+          console.info('[spark] no endpoint set, enquiry not sent', data);
+        }
+        return Promise.resolve();
+      }
+
+      data.token = ENQUIRY_TOKEN;
+      data.source = window.location.href;
+
+      return fetch(ENQUIRY_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(data)
+      }).then(function (res) {
+        return res.json().catch(function () { return { ok: res.ok }; });
+      }).then(function (out) {
+        if (!out || !out.ok) throw new Error((out && out.error) || 'rejected');
+        // The row is saved even if Mailgun stumbled, so only log that.
+        if (out.mail && out.mail.error && window.console) {
+          console.warn('[spark] saved, but mail failed:', out.mail.error);
+        }
+        return out;
+      });
     };
 
     form.addEventListener('submit', function (e) {
