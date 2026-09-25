@@ -155,3 +155,13 @@ button{cursor:pointer}table{border-collapse:collapse;width:100%}
   .js.is-ready .factrow      {transition-delay:.23s}
   .js.is-ready .stage__rail  {transition-delay:.28s}
 }
+
+/* Landscape phones: the tablet rule gave the panel a fixed 460px, taller
+   than the whole viewport, so the can sat half off-screen. Bind it to the
+   viewport instead — this catches landscape at any width. */
+@media (max-height:520px){
+  .stage__plate{height:min(320px,72svh)}
+  .stage__canvas{inset:8px 0 26px}
+  .stage__size{top:14px;right:16px;font-size:1.15rem}
+  .stage__grab{bottom:8px}
+}
