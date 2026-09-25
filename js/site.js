@@ -9,7 +9,7 @@
 
   /* Paste the Apps Script /exec URL here once the web app is deployed.
      Empty means the form still validates and confirms, but sends nothing. */
-  var ENQUIRY_ENDPOINT = '';
+  var ENQUIRY_ENDPOINT = 'https://script.google.com/macros/s/AKfycby0Rm3t71T78GhJsuwFVRghAMV_wMVKjb-wZQvCOEna10n7hXeBXGFeI18RApCKBPah/exec';
   var ENQUIRY_TOKEN = '';
 
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;

@@ -83,9 +83,34 @@ function doPost(e) {
   }
 }
 
-/** A GET is only ever a health check — never returns stored data. */
-function doGet() {
-  return reply(200, { ok: true, service: 'spark-enquiry' });
+/** A GET is only ever a health check — never returns stored data.
+ *  ?check=1 reports which properties are set, as booleans only. It never
+ *  returns a value, so the Mailgun key cannot leak through it. */
+function doGet(e) {
+  var check = e && e.parameter && e.parameter.check;
+  if (!check) return reply(200, { ok: true, service: 'spark-enquiry' });
+
+  var required = ['SHEET_ID', 'MAILGUN_KEY', 'MAILGUN_DOMAIN', 'MAIL_FROM', 'ADMIN_EMAIL'];
+  var optional = ['MAILGUN_REGION', 'SHEET_TAB', 'FORM_TOKEN'];
+  var set = {}, missing = [];
+
+  required.concat(optional).forEach(function (k) {
+    var present = !!PROPS.getProperty(k);
+    set[k] = present;
+    if (!present && required.indexOf(k) !== -1) missing.push(k);
+  });
+
+  // Prove the sheet is reachable without writing to it.
+  var sheet = 'not checked';
+  if (set.SHEET_ID) {
+    try {
+      sheet = 'ok: "' + SpreadsheetApp.openById(PROPS.getProperty('SHEET_ID')).getName() + '"';
+    } catch (err) {
+      sheet = 'cannot open: ' + String(err).slice(0, 140);
+    }
+  }
+
+  return reply(200, { ok: missing.length === 0, propertiesSet: set, missing: missing, sheet: sheet });
 }
 
 /* ---------------------------------------------------------------- sheet */
