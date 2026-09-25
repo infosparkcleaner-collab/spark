@@ -169,3 +169,21 @@ button{cursor:pointer}table{border-collapse:collapse;width:100%}
 /* Bot trap. Off-screen rather than display:none, which some bots skip,
    and out of the tab order so nobody using a keyboard ever lands on it. */
 .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+
+/* The workshop film sits in near-black so the footage carries. Re-declaring
+   the tokens here means the heading, lede, ticks and note all follow without
+   a rule each; --spark is lifted because the brand red measures 3.8:1 on this
+   background, fine for a decorative mark but tight for anything else. */
+.action{
+  --paper:#090909;
+  --panel:#15161a;
+  --ink:#f4f5f6;
+  --ink-soft:#c8ced4;
+  --muted:#9aa1a8;
+  --rule:rgba(255,255,255,.12);
+  --rule-strong:rgba(255,255,255,.24);
+  --spark:#ff3a57;
+  background:var(--paper);
+  color:var(--ink);
+  border-top:0;
+}
