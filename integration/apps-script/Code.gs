@@ -79,7 +79,14 @@ function doPost(e) {
 
   } catch (err) {
     console.error('enquiry failed', err);
-    return reply(500, { ok: false, error: 'could not record the enquiry' });
+    // The reason is returned as well as logged. These are configuration
+    // faults such as a missing property or an unauthorised sheet, never
+    // anything secret, and without them this is undiagnosable from outside.
+    return reply(500, {
+      ok: false,
+      error: 'could not record the enquiry',
+      reason: String(err && err.message ? err.message : err).slice(0, 300)
+    });
   }
 }
 
