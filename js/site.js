@@ -9,11 +9,6 @@
 
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  /* ---------- hero entrance (the page's one automatic motion) ---------- */
-  requestAnimationFrame(function () {
-    document.body.classList.add('is-ready');
-  });
-
   /* ---------- current year ---------- */
   var year = document.getElementById('year');
   if (year) year.textContent = String(new Date().getFullYear());
@@ -45,7 +40,7 @@
     });
 
     // A resize past the breakpoint should not leave the panel stuck open.
-    window.matchMedia('(min-width: 921px)').addEventListener('change', function (e) {
+    window.matchMedia('(min-width: 1000px)').addEventListener('change', function (e) {
       if (e.matches) setMenu(false);
     });
   }

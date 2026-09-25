@@ -1,145 +1,93 @@
 # SPARK — Brake & Parts Cleaner
 
-A light-theme product site for the SPARK 550 ml brake and parts cleaner, built for
-trade and distributor enquiries.
+A static product site for the SPARK 550 ml brake and parts cleaner, designed for
+trade and distributor enquiries. Run `node serve.js` and open
+http://localhost:5173. No package installation or build step is required.
 
-Run `node serve.js` and open http://localhost:5173. No build step and nothing to
-install. The server is required, not optional: the 3D stage is an ES module, so
-opening `index.html` from disk will not load it (the page still reads correctly —
-it falls back to the product photograph — but you get no can). The video also needs
-range requests to seek.
+Use the server rather than opening the HTML file directly: the 3D stage uses ES
+modules and the video needs byte-range support.
 
-## What the page is
+## Design
 
-A manufacturer's datasheet rather than a marketing landing page: white paper, cool
-grey panels, a single red taken from the pack (`#e4002b`), and one typeface
-(Archivo) used at two widths. Structure carries information — the applications and
-specifications are real tables, and the only numbered sequence on the page is the
-genuine three-step one (shake, spray, clean).
+The current design uses white and silver surfaces, charcoal text, Archivo variable
+type, and Spark red for primary actions. A graphite studio backdrop with neutral lighting and softer cap reflections keeps the can
+visible without oversized background lettering. The fallback uses the clean studio photograph. The headline, tour copy,
+primary actions and product facts have separate roles; actions remain available
+throughout the tour.
 
-Sections, in order: the can (pinned 3D tour), workshop video, why it performs, how
-to use, where it's used, specifications and safety (with the label reference
-photographs), contact.
+Sections: product tour, workshop demonstration, performance, directions,
+applications, specifications and label references, enquiry form.
 
-## The can — 3D stage
-
-The opening section is a real-time WebGL model of the 550 ml can: a lathed body,
-a separate cap, a valve, and the actual pack artwork wrapped around it. The three
-product photographs are column-sliced into a single cylindrical texture, so the
-label you turn is the real label.
-
-On a wide screen the section pins for three viewport heights and a scrubbed
-ScrollTrigger drives four beats:
-
-| Beat | Rail label | What the can does |
-|---|---|---|
-| 0 | The can | Rests in a three-quarter view |
-| 1 | Precision valve | Cap lifts and is laid aside, revealing the valve |
-| 2 | The formula | Turns to the features panel the copy is quoting |
-| 3 | The pack | Turns back to the front and settles |
-
-The rail on the right is clickable and scrolls to the middle of a beat. The can can
-be dragged to turn it at any time.
-
-**How it degrades.** The beats are plain stacked content in the markup and the
-photograph is in the `<img>`, so the section reads correctly with no JavaScript at
-all. `gsap.matchMedia` then decides what to add:
-
-- **≥ 921px, motion allowed** — the pinned tour above.
-- **≤ 920px** — no pin, beats stacked, can sways gently and stays draggable.
-- **`prefers-reduced-motion: reduce`** — no pin, beats stacked, and the can renders
-  a single frame then stops. The loop idles to **zero draw calls**, verified.
-- **No WebGL, or the module fails** — the photograph simply stays.
-
-The render loop also pauses when the canvas is offscreen or the tab is hidden, and
-skips painting entirely once the pose has settled.
+- Core colours: white `#ffffff`, silver `#f1f3f4`, charcoal `#202327`, muted text
+  `#60666d`, Spark red `#d9092f`.
+- Desktop uses two-column product and demonstration compositions. Performance
+  details use four columns, then two on tablets and one on phones.
+- Below 700px, the hero reads headline, product, tour controls, description,
+  actions and facts. Application rows become single-column entries without
+  horizontal scrolling. Forms are single-column on phones.
+- The menu collapses below 1000px; minimum control heights are 44px or greater.
+- Content stays visible without entrance animations. Reduced motion is respected.
 
 ## Files
 
-| Path | What it is |
+| Path | Responsibility |
 |---|---|
-| `index.html` | The whole page |
-| `css/site.css` | The whole stylesheet |
-| `js/site.js` | Menu, video, lightbox, form. No dependencies. |
-| `js/stage.js` | The 3D can and its scroll choreography (Three.js + GSAP) |
-| `assets/vendor/` | Three.js, GSAP, ScrollTrigger — vendored, no CDN |
-| `assets/img/` | Optimised WebP images |
-| `assets/video/` | The workshop demonstration clip |
-| `assets/reference/` | Full-resolution originals |
-| `legacy/` | The previous dark-theme scroll-driven site, kept for reference |
+| `index.html` | Page content, navigation, forms and semantic structure |
+| `css/site.css` | Design tokens, components and responsive layouts |
+| `js/site.js` | Menu, video, lightbox and enquiry validation |
+| `js/stage.js` | Three.js can, label texture, drag and GSAP tour |
+| `serve.js` | Local static preview server with video range requests |
+| `assets/vendor/` | Local Three.js, GSAP and ScrollTrigger dependencies |
+| `assets/img/` | Web images and product references |
+| `assets/video/` | Workshop demonstration |
+| `legacy/` | Earlier designs, not loaded by the current page |
 
-## The video
+Archivo is loaded from Google Fonts, with local system fallbacks.
 
-`assets/video/spark-hand-demo.mp4` — 960×960, 6 seconds. It autoplays muted and
-loops, and it is **not** tied to scroll position.
+## Product tour
 
-- `preload="none"`, and the file is only fetched once the section is within 25% of
-  the viewport, so it costs nothing on first paint.
-- Playback pauses when the section scrolls away or the tab is hidden, and resumes
-  on return.
-- The two controls over the video are a play/pause toggle and a sound toggle, so a
-  visitor can turn audio on deliberately.
-- Under `prefers-reduced-motion: reduce` it never autoplays and is never
-  downloaded; the poster shows with a play button.
+The can is modelled with lathed geometry, a separate cap and a valve. Its label is
+assembled from the three actual product photographs into a cylindrical texture.
+The four views are the can, precision valve, formula and pack.
 
-The file is 8.6 MB for 6 seconds (≈11 Mbps), which is far heavier than it needs to
-be. Re-encoding it to roughly 1–1.5 MB would be the single biggest performance win
-left on the page. There is no `ffmpeg` on this machine, so it has not been done:
+- At least 1000px wide and 740px high, with motion enabled: the hero pins below
+  the header for two viewport heights. Scroll and the four controls navigate it.
+- Smaller or shorter screens: the same controls directly select the four views;
+  the page never pins and the can has no automatic idle sway.
+- Reduced motion: no pin, no idle sway, and selected poses update immediately.
+- No WebGL or JavaScript: the product photograph and stacked descriptions remain.
 
-```
-ffmpeg -i assets/video/spark-hand-demo.mp4 -c:v libx264 -crf 26 -preset slow \
-       -vf scale=720:720 -movflags +faststart -an assets/video/spark-hand-demo.mp4
-```
+Pointer dragging rotates the can. Rendering skips settled poses and is gated by
+visibility. Font-load refreshes are deferred safely to avoid stale pin positions
+when restoring a page at a lower scroll position.
 
-## The contact form
+## Video and imagery
 
-The form validates in the browser and shows a confirmation, but **nothing is
-transmitted or stored yet**. `sendEnquiry(data)` in `js/site.js` is the single
-place to wire up a backend; it currently resolves immediately and logs the payload
-to the console. The doc comment above it has the `fetch` call to drop in.
+The video is square at every breakpoint. It loads when at least 25% visible,
+plays muted, and pauses offscreen or when the tab is hidden. Play/pause and sound
+controls remain available. Reduced motion prevents automatic loading and playback.
 
-Fields: name (required), company or workshop, email (required), phone, enquiry type,
-message (required).
+`assets/video/spark-hand-demo.mp4` is approximately 8.6 MB; it has not been
+re-encoded during this design pass. Generated product visuals and the illustrative
+workshop clip are distinct from the actual label-reference photographs.
+`ASSETS.md` records the existing asset provenance.
 
-## Claims and imagery
+## Enquiry form
 
-Product claims are limited to what the physical label says: non-chlorinated, low
-VOC, cleans fast, dries fast, no residue, safe on metals and most surfaces,
-550 ml, for professional and DIY use.
+Client-side validation checks name, email and message, with inline error text and
+focus on the first invalid field. **No enquiries are transmitted or stored.**
+`sendEnquiry(data)` in `js/site.js` is still a stub. Its success message is a demo
+state, so a backend must be connected before using the form for real enquiries.
 
-- The hero can and the workshop clip are generated imagery produced earlier through
-  the Higgsfield plugin from the real product photographs.
-- `product-front/side/back.webp` are photographs of the actual can. They are
-  daylight snapshots rather than studio work, so they sit in the specifications
-  section as label reference, clearly captioned as such, not as brand photography.
-- The previous site's before/after rotor slider has been removed. It was the same
-  stock photograph shown twice with a sepia filter applied to one half, which is
-  not a defensible claim on a product page.
+## Validation for the current design
 
-## Verified in the browser
+Checked with headless Chrome at 320, 360, 390, 430, 768, 820, 999, 1000, 1024,
+1280, 1440 and 1920px widths, plus an 844×390 landscape viewport. No horizontal
+page overflow was found. Checked desktop and mobile tour controls, reload from a
+lower scroll position, pointer dragging, mobile menu/Escape, square video sizing
+and playback, lightbox/focus return, inline validation, and reduced-motion mode.
+JavaScript syntax checks pass. This is local browser verification, not a claim of
+physical-device or all-browser coverage.
 
-Layout at 360, 390, 768, 1024, 1440 and 1920 with no horizontal page scroll at any
-of them (the applications table scrolls inside its own container by design, which
-is intended). The pinned panel fits within the viewport at 1024×768.
-
-All four tour beats and the rail navigation; can drag; mobile menu open/close/
-Escape; video autoplay/pause-offscreen/resume/sound toggle; reduced-motion
-behaviour including the zero-draw-call idle; form validation and success path;
-lightbox open/Escape/focus return; lazy image loading; zero console errors or
-warnings. `node --check` passes on both scripts.
-
-Frame timing across a full scrub of the pinned range: 6.9 ms median, 7.1 ms worst
-frame — comfortable headroom over a 16.7 ms budget.
-
-## Notes
-
-- `assets/vendor/` holds Three.js, GSAP and ScrollTrigger, loaded locally rather
-  than from a CDN. Lenis is no longer used by the live page and is kept only
-  because `legacy/` still loads it — scrolling here is native.
-- `CONCEPT.md`, `HIGGSFIELD-PROMPTS.md` and `REFERENCE-STUDY.md` describe the
-  earlier dark scroll-driven concept and remain as history.
-- The hero can and the workshop clip were generated through the Higgsfield
-  plugin from the real product photographs; `ASSETS.md` records the provenance
-  of every asset.
-- Local agent tooling (`.claude/`, `.agents/`, `.codex/`, `.mcp.json`) is
-  deliberately untracked — it configures a development machine, not the site.
+Earlier design explorations remain in `CONCEPT.md`, `REFERENCE-STUDY.md`,
+`HIGGSFIELD-PROMPTS.md` and `legacy/`. Local agent tooling is untracked.

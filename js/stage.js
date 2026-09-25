@@ -5,9 +5,8 @@
 
    Degradation:
      no WebGL / module error -> the product photograph stays put
-     reduced motion          -> can renders once and holds still,
-                                no pin, beats stacked, no repaints
-     narrow screens          -> can sways gently, no pin, beats stacked
+     reduced motion          -> no pin, instant pose changes on selection
+     narrow / short screens  -> selectable tour, no pin or idle animation
    The photograph is in the markup from the start and the beats read as
    ordinary stacked content, so the first paint never waits for any of
    this and nothing here is load-bearing.
@@ -24,7 +23,7 @@ const steps = [...document.querySelectorAll('.stage__steps button')];
 /* The markup already reads correctly on its own, so a failure here is
    simply "no 3D" — nothing needs undoing. */
 if (section && host && window.gsap && window.ScrollTrigger) {
-  boot().catch(() => section.classList.remove('is-live', 'is-tour'));
+  boot().catch(() => section.classList.remove('is-live', 'is-tour', 'is-interactive'));
 }
 
 /* ---------- beat plumbing (works with or without WebGL) ---------- */
@@ -51,26 +50,36 @@ async function boot() {
   gsap.registerPlugin(ScrollTrigger);
 
   const can = await buildCan();
-  section.classList.add('is-live');
+  section.classList.add('is-live', 'is-interactive');
 
   const mm = gsap.matchMedia();
 
   mm.add(
     {
-      pinned: '(min-width: 921px) and (prefers-reduced-motion: no-preference)',
-      flat: '(max-width: 920px), (prefers-reduced-motion: reduce)',
+      pinned: '(min-width: 1000px) and (min-height: 740px) and (prefers-reduced-motion: no-preference)',
+      flat: '(max-width: 999px), (max-height: 739px), (prefers-reduced-motion: reduce)',
       reduced: '(prefers-reduced-motion: reduce)'
     },
     ctx => {
       const { pinned, reduced } = ctx.conditions;
 
       if (!pinned) {
-        // Stacked reading order: every beat visible, can held at its opening
-        // pose. It sways gently unless motion is not wanted, in which case it
-        // simply sits there and waits to be dragged.
+        // Small screens use the same four controls without pinning the page.
         can.setProgress(0);
-        can.setSway(!reduced);
-        return;
+        can.setSway(false);
+        showBeat(0);
+        const onStep = e => {
+          const i = Number(e.currentTarget.dataset.goto);
+          showBeat(i);
+          can.setProgress([0, 0.5, 0.75, 1][i]);
+          if (reduced) can.snap();
+        };
+        steps.forEach(s => s.addEventListener('click', onStep));
+        if (reduced) can.snap();
+        return () => {
+          steps.forEach(s => s.removeEventListener('click', onStep));
+          activeBeat = -1;
+        };
       }
 
       section.classList.add('is-tour');
@@ -79,8 +88,8 @@ async function boot() {
 
       const trigger = ScrollTrigger.create({
         trigger: section,
-        start: 'top top',
-        end: '+=' + window.innerHeight * 3,
+        start: 'top 80px',
+        end: () => '+=' + window.innerHeight * 2,
         pin: '.stage__pin',
         pinSpacing: true,
         scrub: 0.6,
@@ -110,18 +119,8 @@ async function boot() {
     }
   );
 
-  // Section reveals for the rest of the page: one batch, small move, once only.
-  mm.add('(prefers-reduced-motion: no-preference)', () => {
-    gsap.set('[data-rise]', { opacity: 0, y: 18 });
-    ScrollTrigger.batch('[data-rise]', {
-      start: 'top 88%',
-      once: true,
-      onEnter: batch => gsap.to(batch, {
-        opacity: 1, y: 0, duration: 0.6, ease: 'power2.out', stagger: 0.08, overwrite: true
-      })
-    });
-    return () => gsap.set('[data-rise]', { clearProps: 'opacity,transform' });
-  });
+  // Refresh once the variable font has settled so pin measurements stay exact.
+  document.fonts.ready.then(() => ScrollTrigger.refresh(true));
 }
 
 /* ============================================================
@@ -141,7 +140,8 @@ async function buildCan() {
   const camera = new THREE.PerspectiveCamera(30, 1, 0.1, 80);
   camera.position.set(0, 0, 10.5);
 
-  // Bright studio: a white room for reflections, one soft key, a cool fill.
+  // Neutral studio lighting keeps the pack's warm red from shifting orange
+  // and avoids a blue cast on the black label.
   const pmrem = new THREE.PMREMGenerator(renderer);
   const env = new RoomEnvironment();
   scene.environment = pmrem.fromScene(env, 0.04).texture;
@@ -150,11 +150,11 @@ async function buildCan() {
 
   scene.add(new THREE.HemisphereLight(0xffffff, 0xd8d4cb, 2.1));
 
-  const key = new THREE.DirectionalLight(0xfffaf2, 2.4);
+  const key = new THREE.DirectionalLight(0xffffff, 2.4);
   key.position.set(-3.4, 5.6, 6.4);
   scene.add(key);
 
-  const fill = new THREE.DirectionalLight(0xeef3f8, 1.5);
+  const fill = new THREE.DirectionalLight(0xf4f5f6, 1.5);
   fill.position.set(4.6, 1.2, 4.2);
   scene.add(fill);
 
@@ -170,8 +170,8 @@ async function buildCan() {
 
   const steel = new THREE.MeshStandardMaterial({ color: 0xc9ced3, metalness: 0.92, roughness: 0.28 });
   const capRed = new THREE.MeshPhysicalMaterial({
-    color: 0xd42d0b, roughness: 0.3, metalness: 0.03,
-    clearcoat: 0.85, clearcoatRoughness: 0.2
+    color: 0xb51f0b, roughness: 0.4, metalness: 0.02, envMapIntensity: 0.65,
+    clearcoat: 0.28, clearcoatRoughness: 0.38
   });
   const black = new THREE.MeshStandardMaterial({ color: 0x0a0c0e, roughness: 0.38, metalness: 0.18 });
 
@@ -260,7 +260,8 @@ async function buildCan() {
 
   let progress = 0;      // scroll 0..1
   let drag = 0;          // extra turn the visitor has dragged in
-  let sway = true;       // idle motion when there is no scroll story
+  let sway = false;
+  let snapNext = false;
   let running = true;
   let visible = true;
   let dirty = true;      // forces a repaint after a resize or a state change
@@ -304,7 +305,7 @@ async function buildCan() {
 
     let moved = 0;
     const step = (obj, key, target) => {
-      const d = (target - obj[key]) * 0.12;
+      const d = (target - obj[key]) * (snapNext ? 1 : 0.12);
       obj[key] += d;
       moved += Math.abs(d);
     };
@@ -320,7 +321,7 @@ async function buildCan() {
 
     tmp.set(0, 0, baseDist + pose.dolly);
     moved += camera.position.distanceTo(tmp);
-    camera.position.lerp(tmp, 0.12);
+    camera.position.lerp(tmp, snapNext ? 1 : 0.12);
     camera.lookAt(0, frameDrop, 0);
 
     shadow.material.opacity = 0.4 - pose.lift * 0.12;
@@ -328,6 +329,7 @@ async function buildCan() {
     // Everything has settled and nothing is driving it — stop painting.
     if (moved < 0.0004 && !dragging && !dirty) return;
     dirty = false;
+    snapNext = false;
     renderer.render(scene, camera);
   }
 
@@ -335,12 +337,11 @@ async function buildCan() {
      lens, hold the field of view and pull the camera back only as far as it
      takes to fit that box — so the can reads at the same size in a tall
      desktop plate and a short mobile one. */
-  const FIT_H = 5.9;
-  const FIT_W = 2.2;
+  const FIT_H = 6.1;
+  const FIT_W = 3.1;
   const FIT_CAP = 780;   // canvas height the framing is calibrated to
-  const FOOT_PX = 40;    // gap kept between the can's base and the canvas foot
   let baseDist = 11;
-  let frameDrop = 0.35;  // recomputed on resize
+  let frameDrop = 0.1;
 
   function resize() {
     const w = host.clientWidth;
@@ -358,9 +359,8 @@ async function buildCan() {
     const half = Math.tan((camera.fov * Math.PI) / 360);
     baseDist = Math.max(fitH / 2 / half, FIT_W / 2 / (half * camera.aspect));
 
-    /* Look above centre by whatever puts the can's base FOOT_PX above the
-       canvas foot, so the seam below it always crosses the same spot. */
-    frameDrop = -2.3 + (fitH / h) * (h / 2 - FOOT_PX);
+    // Centre the product inside its contained display, leaving room for the cap.
+    frameDrop = 0.1;
     dirty = true;
   }
 
@@ -391,7 +391,8 @@ async function buildCan() {
 
   return {
     setProgress(p) { progress = p; dirty = true; },
-    setSway(on) { sway = on; dirty = true; }
+    setSway(on) { sway = on; dirty = true; },
+    snap() { snapNext = true; dirty = true; }
   };
 }
 

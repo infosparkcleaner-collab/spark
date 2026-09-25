@@ -17,7 +17,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/site.css">
-<link rel="preload" as="image" href="assets/img/spark-can-cutout.webp" fetchpriority="high">
+<link rel="preload" as="image" href="assets/img/spark-studio-higgsfield.webp" fetchpriority="high">
 <link rel="preload" as="image" href="assets/img/product-front.webp">
 <link rel="preload" as="image" href="assets/img/product-side.webp">
 <link rel="preload" as="image" href="assets/img/product-back.webp">
@@ -36,10 +36,8 @@
     </a>
 
     <nav class="menu" id="menu" aria-label="Main">
-      <a href="#action">In action</a>
-      <a href="#performance">Performance</a>
-      <a href="#use">How to use</a>
-      <a href="#applications">Where it&rsquo;s used</a>
+      <a href="#action">In the workshop</a>
+      <a href="#performance">Why Spark</a>
       <a href="#specs">Specifications</a>
       <a class="menu__cta button button--solid" href="#contact">Send an enquiry</a>
     </nav>
@@ -56,44 +54,45 @@
 
 <!-- ───────────────────────── stage: the can ─────────────────────────
      One pinned sequence. The can is modelled in WebGL and turns as you
-     scroll through four beats. Without WebGL, or under reduced motion,
-     or on a small screen, the same four beats read as ordinary stacked
-     content with the product photograph.
+     scroll through four beats on sufficiently large screens. Small screens
+     use selectable views without pinning. Without WebGL the photograph and
+     all four content panels remain available.
 ------------------------------------------------------------------- -->
 <section class="stage" id="top">
   <div class="stage__pin">
     <div class="stage__grid">
 
       <div class="stage__copy">
-        <p class="stage__kicker" data-reveal="1">Professional strength &middot; 550 ml aerosol</p>
-        <h1 class="stage__title" data-reveal="2">Brake&nbsp;&amp; parts cleaner that leaves nothing behind.</h1>
+        <p class="stage__kicker">Spark brake &amp; parts cleaner</p>
+        <h1 class="stage__title">Clean parts.<br>Ready for work.</h1>
 
         <div class="beats">
-          <div class="beat is-on" data-beat="0" data-reveal="3">
-            <p class="beat__text">Spark cuts brake fluid, grease, oil and road dirt in a single pass, then evaporates clean. Non-chlorinated, low VOC, and safe on metals and most surfaces.</p>
-            <div class="beat__actions">
-              <a class="button button--solid button--lg" href="#contact">Send an enquiry</a>
-              <a class="button button--line button--lg" href="#specs">Read the specifications</a>
-            </div>
+          <div class="beat is-on" data-beat="0">
+            <p class="beat__text">Professional-strength cleaning for the workshop. Cuts through grease, oil and brake dust, then dries without a trace.</p>
           </div>
 
           <div class="beat" data-beat="1">
-            <h2 class="beat__head">The cap lifts clear</h2>
-            <p class="beat__text">Underneath is the precision valve. Full pressure from the first press, with a jet narrow enough to aim between a pad and a disc.</p>
+            <h2 class="beat__head">Made for precise application</h2>
+            <p class="beat__text">Remove the cap to reveal the precision valve. Direct the spray exactly where you need it.</p>
           </div>
 
           <div class="beat" data-beat="2">
-            <h2 class="beat__head">Everything is on the panel</h2>
-            <p class="beat__text">Cleans fast, dries fast. No residue, non-chlorinated. Safe on metals and most surfaces, with a low VOC formula.</p>
+            <h2 class="beat__head">Power in the formula</h2>
+            <p class="beat__text">Fast cleaning. Fast drying. A low VOC, non-chlorinated formula that leaves no residue.</p>
           </div>
 
           <div class="beat" data-beat="3">
             <h2 class="beat__head">550 ml of working stock</h2>
-            <p class="beat__text">A heavy-duty steel aerosol sized for a working bay rather than a shelf. Professional and DIY use.</p>
+            <p class="beat__text">A 550 ml steel aerosol for regular workshop use. Suitable for professional and DIY applications.</p>
           </div>
         </div>
 
-        <dl class="factrow" data-reveal="4">
+        <div class="beat__actions">
+          <a class="button button--solid button--lg" href="#contact">Send an enquiry</a>
+          <a class="button button--line button--lg" href="#action">See it in action</a>
+        </div>
+
+        <dl class="factrow">
           <div class="factrow__item"><dt>Net content</dt><dd>550 ml</dd></div>
           <div class="factrow__item"><dt>Formula</dt><dd>Non-chlorinated</dd></div>
           <div class="factrow__item"><dt>Residue</dt><dd>None</dd></div>
@@ -101,10 +100,11 @@
         </dl>
       </div>
 
-      <figure class="stage__plate" data-reveal="2">
+      <figure class="stage__plate">
+        <span class="stage__size">550 <small>ml</small></span>
         <div class="stage__canvas" id="canHost"></div>
         <img class="stage__photo" id="canPhoto"
-             src="assets/img/spark-can-cutout.webp" width="1400" height="1875"
+             src="assets/img/spark-studio-higgsfield.webp" width="1400" height="1875"
              alt="Spark Brake &amp; Parts Cleaner, a black 550 ml aerosol can with a red cap, photographed against a plain background."
              fetchpriority="high" decoding="async">
         <figcaption class="stage__grab">Drag the can to turn it</figcaption>
@@ -125,17 +125,17 @@
 </section>
 
 <!-- ───────────────────────── video ───────────────────────── -->
-<section class="section action" id="action" data-tone="dark">
+<section class="section action" id="action">
   <div class="wrap action__in">
     <div class="action__text">
-      <h2 class="h2">See it in the bay</h2>
+      <h2 class="h2">A cleaner finish.<br>A job well done.</h2>
       <p class="lede">Cap off, nozzle down, one pass across the disc. No soaking, no wiping, and no waiting for the part to dry before it goes back on the car.</p>
       <ul class="ticks">
         <li>Sprays at full pressure from the first press</li>
         <li>Flushes contamination off the disc face and calliper</li>
         <li>Flashes off clean, so parts are ready to refit</li>
       </ul>
-      <p class="note">Filmed demonstration. Results vary with the level and type of contamination.</p>
+      <p class="note">Illustrative demonstration. Results vary with the level and type of contamination.</p>
     </div>
 
     <figure class="player" id="player">
@@ -162,27 +162,27 @@
 </section>
 
 <!-- ───────────────────────── performance ───────────────────────── -->
-<section class="section" id="performance" data-tone="warm">
+<section class="section" id="performance" data-tone="silver">
   <div class="wrap">
-    <header class="secthead" data-rise>
+    <header class="secthead">
       <h2 class="h2">Why it performs</h2>
       <p class="lede">Four things the formula is built to do, taken straight from the pack.</p>
     </header>
 
     <div class="perf">
-      <article class="perf__item" data-rise>
+      <article class="perf__item">
         <h3>Removes brake fluid, grease, oil and dirt</h3>
         <p>A strong solvent blend that lifts the contamination brake work leaves behind, so pads and discs bed in against clean metal.</p>
       </article>
-      <article class="perf__item" data-rise>
+      <article class="perf__item">
         <h3>Cleans fast, dries fast</h3>
         <p>Flashes off quickly and leaves a dry surface. Less waiting between cleaning the part and putting it back on the vehicle.</p>
       </article>
-      <article class="perf__item" data-rise>
+      <article class="perf__item">
         <h3>Safe on metals and most surfaces</h3>
         <p>Formulated for brake systems, clutch components and metal parts. Check the pack for compatibility before use on plastics or painted work.</p>
       </article>
-      <article class="perf__item perf__item--eco" data-rise>
+      <article class="perf__item perf__item--eco">
         <h3>Low VOC, non-chlorinated</h3>
         <p>A low VOC, non-chlorinated formula as specified on the pack &mdash; professional cleaning power with a lighter solvent load.</p>
       </article>
@@ -193,31 +193,31 @@
 <!-- ───────────────────────── how to use ───────────────────────── -->
 <section class="section" id="use">
   <div class="wrap">
-    <header class="secthead" data-rise>
+    <header class="secthead">
       <h2 class="h2">Shake. Spray. Clean.</h2>
       <p class="lede">Three steps, about a minute. Always read the directions and safety information on the can before use.</p>
     </header>
 
     <div class="steps">
       <ol class="steps__list">
-        <li class="step" data-rise>
+        <li class="step">
           <span class="step__n" aria-hidden="true">1</span>
           <h3>Shake the can</h3>
           <p>Shake well before use to bring the formula up to pressure. Work in a well-ventilated area, away from heat, sparks and open flame.</p>
         </li>
-        <li class="step" data-rise>
+        <li class="step">
           <span class="step__n" aria-hidden="true">2</span>
           <h3>Spray the part</h3>
           <p>Hold upright, remove the cap and spray the part directly from roughly 20&nbsp;cm. Cover the contaminated area in one steady pass.</p>
         </li>
-        <li class="step" data-rise>
+        <li class="step">
           <span class="step__n" aria-hidden="true">3</span>
           <h3>Let it clean</h3>
           <p>The solvent carries contamination off the part and evaporates. No wiping needed. Let the part dry fully before refitting.</p>
         </li>
       </ol>
 
-      <figure class="steps__figure" data-rise>
+      <figure class="steps__figure">
         <img src="assets/img/product-application.webp" width="1200" height="675" loading="lazy" decoding="async"
              alt="A gloved hand sprays Spark onto an oily gearbox casing over a drip tray in a workshop.">
         <figcaption>Degreasing a gearbox casing before strip-down</figcaption>
@@ -227,14 +227,14 @@
 </section>
 
 <!-- ───────────────────────── applications ───────────────────────── -->
-<section class="section" id="applications" data-tone="dark">
+<section class="section" id="applications" data-tone="silver">
   <div class="wrap">
-    <header class="secthead" data-rise>
+    <header class="secthead">
       <h2 class="h2">Where it&rsquo;s used</h2>
       <p class="lede">One can covers most of what comes through a workshop, from fleet servicing to the home garage.</p>
     </header>
 
-    <div class="matrix__scroll" data-rise tabindex="0" role="region" aria-label="Applications table">
+    <div class="matrix__scroll" tabindex="0" role="region" aria-label="Applications table">
       <table class="matrix">
         <caption class="vh">Applications for Spark Brake &amp; Parts Cleaner, with typical parts and the contamination it removes</caption>
         <thead>
@@ -275,12 +275,12 @@
 <!-- ───────────────────────── specs ───────────────────────── -->
 <section class="section" id="specs" data-tone="warm">
   <div class="wrap">
-    <header class="secthead" data-rise>
+    <header class="secthead">
       <h2 class="h2">Specifications &amp; safety</h2>
       <p class="lede">Professional-grade chemistry, handled professionally. The can carries the full directions &mdash; read them before use.</p>
     </header>
 
-    <div class="specgrid" data-rise>
+    <div class="specgrid">
       <table class="spec">
         <caption class="vh">Product specifications</caption>
         <tbody>
@@ -315,7 +315,7 @@
       </div>
     </div>
 
-    <div class="labelref" data-rise>
+    <div class="labelref">
       <h3 class="labelref__title">Read the label</h3>
       <p class="labelref__note">Reference photographs of the physical can. Select one to read the panel at full size &mdash; the can itself always carries the definitive directions.</p>
       <div class="labelref__row">
@@ -357,7 +357,7 @@
       </dl>
     </div>
 
-    <form class="form" id="enquiryForm" data-rise novalidate>
+    <form class="form" id="enquiryForm" novalidate>
       <div class="form__row">
         <div class="field">
           <label for="f-name">Name <abbr title="required">*</abbr></label>
