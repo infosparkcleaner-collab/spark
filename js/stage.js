@@ -289,7 +289,7 @@ async function buildCan() {
     pose.lift = uncap;
     pose.y = -uncap * 0.3;
     // Pull back while the cap is in the air so it never leaves the frame.
-    pose.dolly = uncap * 0.55 + rest * 0.25;
+    pose.dolly = uncap * 0.85 + rest * 0.25;
   }
 
   const tmp = new THREE.Vector3();
@@ -340,7 +340,7 @@ async function buildCan() {
      lens, hold the field of view and pull the camera back only as far as it
      takes to fit that box — so the can reads at the same size in a tall
      desktop plate and a short mobile one. */
-  const FIT_H = 6.1;
+  const FIT_H = 5.5;
   const FIT_W = 3.1;
   const FIT_CAP = 780;   // canvas height the framing is calibrated to
   let baseDist = 11;
