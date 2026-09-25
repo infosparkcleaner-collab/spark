@@ -124,9 +124,20 @@ function appendRow(enquiry) {
     sheet.appendRow(HEADERS);
     sheet.getRange(1, 1, 1, HEADERS.length).setFontWeight('bold');
     sheet.setFrozenRows(1);
+    // Everything but the timestamp is text. Without this Sheets reads a
+    // leading + or - as a formula, which is why "+91 98200 11223" landed
+    // in the sheet as an error.
+    sheet.getRange(2, 2, sheet.getMaxRows() - 1, HEADERS.length - 1)
+         .setNumberFormat('@');
   }
 
-  sheet.appendRow([
+  var row = sheet.getLastRow() + 1;
+
+  // Format before writing: the format decides how the value is parsed.
+  sheet.getRange(row, 2, 1, HEADERS.length - 1).setNumberFormat('@');
+  sheet.getRange(row, 1).setNumberFormat('yyyy-mm-dd hh:mm:ss');
+
+  sheet.getRange(row, 1, 1, HEADERS.length).setValues([[
     new Date(),
     enquiry.name,
     enquiry.email,
@@ -135,7 +146,7 @@ function appendRow(enquiry) {
     enquiry.type,
     enquiry.message,
     enquiry.source
-  ]);
+  ]]);
 }
 
 /* ----------------------------------------------------------------- mail */
@@ -227,7 +238,11 @@ function mailgun(key, domain, fields) {
 /* ---------------------------------------------------------------- utils */
 
 function clean(v, max) {
-  return String(v == null ? '' : v).replace(/\s+/g, ' ').trim().slice(0, max);
+  var out = String(v == null ? '' : v).replace(/\s+/g, ' ').trim().slice(0, max);
+  // A leading = would run if the sheet is exported to CSV or a column is
+  // reformatted later, so it is quoted. Plus and minus are left alone:
+  // they are ordinary in phone numbers and the text format handles them.
+  return /^=/.test(out) ? "'" + out : out;
 }
 
 function isEmail(v) {
