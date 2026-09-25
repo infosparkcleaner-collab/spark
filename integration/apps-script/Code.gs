@@ -56,7 +56,7 @@ function doPost(e) {
     var enquiry = {
       name: clean(body.name, 120),
       email: clean(body.email, 160),
-      phone: clean(body.phone, 60),
+      phone: cleanPhone(body.phone),
       company: clean(body.company, 160),
       type: clean(body.enquiryType, 60),
       message: clean(body.message, 4000),
@@ -243,6 +243,13 @@ function clean(v, max) {
   // reformatted later, so it is quoted. Plus and minus are left alone:
   // they are ordinary in phone numbers and the text format handles them.
   return /^=/.test(out) ? "'" + out : out;
+}
+
+/** Stores the number without its leading sign: +91 98200 11223 becomes
+ *  91 98200 11223. The cell stays text-formatted regardless, which keeps a
+ *  leading zero and stops a long number turning into scientific notation. */
+function cleanPhone(v) {
+  return clean(v, 60).replace(/^[+\-\s]+/, '');
 }
 
 function isEmail(v) {
