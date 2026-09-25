@@ -56,8 +56,11 @@ async function boot() {
 
   mm.add(
     {
-      pinned: '(min-width: 1000px) and (min-height: 740px) and (prefers-reduced-motion: no-preference)',
-      flat: '(max-width: 999px), (max-height: 739px), (prefers-reduced-motion: reduce)',
+      /* 740px of height ruled out 1280x720 and any window with devtools open,
+         so the scroll story silently vanished on very ordinary laptops. The
+         pinned panel needs 640px, which 680 clears with room to spare. */
+      pinned: '(min-width: 1000px) and (min-height: 680px) and (prefers-reduced-motion: no-preference)',
+      flat: '(max-width: 999px), (max-height: 679px), (prefers-reduced-motion: reduce)',
       reduced: '(prefers-reduced-motion: reduce)'
     },
     ctx => {

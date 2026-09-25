@@ -9,6 +9,12 @@
 
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+  /* Releases the hero's one load sequence. Next frame, so the first paint
+     has the start state and the transition actually runs. */
+  requestAnimationFrame(function () {
+    document.documentElement.classList.add('is-ready');
+  });
+
   /* ---------- current year ---------- */
   var year = document.getElementById('year');
   if (year) year.textContent = String(new Date().getFullYear());
