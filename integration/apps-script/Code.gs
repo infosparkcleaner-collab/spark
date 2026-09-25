@@ -90,15 +90,17 @@ function doGet(e) {
   var check = e && e.parameter && e.parameter.check;
   if (!check) return reply(200, { ok: true, service: 'spark-enquiry' });
 
-  var required = ['SHEET_ID', 'MAILGUN_KEY', 'MAILGUN_DOMAIN', 'MAIL_FROM', 'ADMIN_EMAIL'];
+  var forSheet = ['SHEET_ID'];
+  var forMail = ['MAILGUN_KEY', 'MAILGUN_DOMAIN', 'MAIL_FROM', 'ADMIN_EMAIL'];
   var optional = ['MAILGUN_REGION', 'SHEET_TAB', 'FORM_TOKEN'];
-  var set = {}, missing = [];
+  var set = {};
 
-  required.concat(optional).forEach(function (k) {
-    var present = !!PROPS.getProperty(k);
-    set[k] = present;
-    if (!present && required.indexOf(k) !== -1) missing.push(k);
+  forSheet.concat(forMail, optional).forEach(function (k) {
+    set[k] = !!PROPS.getProperty(k);
   });
+
+  var missingSheet = forSheet.filter(function (k) { return !set[k]; });
+  var missingMail = forMail.filter(function (k) { return !set[k]; });
 
   // Prove the sheet is reachable without writing to it.
   var sheet = 'not checked';
@@ -110,7 +112,15 @@ function doGet(e) {
     }
   }
 
-  return reply(200, { ok: missing.length === 0, propertiesSet: set, missing: missing, sheet: sheet });
+  return reply(200, {
+    ok: missingSheet.length === 0,          // the row is what must work
+    sheetReady: missingSheet.length === 0,
+    mailReady: missingMail.length === 0,
+    missingForSheet: missingSheet,
+    missingForMail: missingMail,
+    propertiesSet: set,
+    sheet: sheet
+  });
 }
 
 /* ---------------------------------------------------------------- sheet */
@@ -238,6 +248,21 @@ function reply(status, payload) {
   return ContentService
     .createTextOutput(JSON.stringify(payload))
     .setMimeType(ContentService.MimeType.JSON);
+}
+
+/* Writes one row and sends nothing. Use this while Mailgun is still to be
+   set up: it also triggers the Sheets permission prompt. */
+function testSheet() {
+  appendRow({
+    name: 'Test row',
+    email: 'test@example.com',
+    phone: '',
+    company: 'Sheet check',
+    type: 'technical',
+    message: 'Written by testSheet(). Safe to delete.',
+    source: 'testSheet()'
+  });
+  return 'row written to "' + SpreadsheetApp.openById(must('SHEET_ID')).getName() + '"';
 }
 
 /* Run once from the editor to check the properties and mail path without

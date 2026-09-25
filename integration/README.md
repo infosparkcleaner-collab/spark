@@ -50,10 +50,14 @@ there is nothing to set up inside the sheet itself. Columns are:
 
    Put the Mailgun key **here only**. Never in the page, a commit, or a chat.
 
-4. Run `selfTest` once from the editor. Google will ask for permission the
-   first time — it needs the sheet and outbound fetch. It writes one row and
-   sends both mails to the admin address, so you can confirm the whole path
-   before the form is wired up.
+4. Run **`testSheet`** once from the editor. It writes one row and sends
+   nothing, and it triggers the permission prompt Google shows the first
+   time — approve it. Once Mailgun is configured, run `selfTest` instead:
+   that writes a row *and* sends both messages.
+
+   Mailgun can be left until later. A missing mail property is caught and
+   reported in the response; the row is still written and the visitor still
+   sees their confirmation.
 5. **Deploy › New deployment › Web app**
    - Execute as: **Me**
    - Who has access: **Anyone**
