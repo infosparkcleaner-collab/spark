@@ -5,11 +5,19 @@ const types = {'.html':'text/html','.css':'text/css','.js':'text/javascript','.j
   '.jpg':'image/jpeg','.jpeg':'image/jpeg','.png':'image/png','.webp':'image/webp','.svg':'image/svg+xml','.woff2':'font/woff2','.mp4':'video/mp4','.webmanifest':'application/manifest+json','.txt':'text/plain; charset=utf-8','.xml':'application/xml'};
 http.createServer((req,res)=>{
   let p = decodeURIComponent(req.url.split('?')[0]);
+  // Match Vercel's cleanUrls: /about serves about.html, /about.html and
+  // /index.html redirect to their clean form, unknown paths get 404.html.
+  const q = req.url.includes('?') ? req.url.slice(req.url.indexOf('?')) : '';
+  if (/\.html$/.test(p)) {
+    const clean = p === '/index.html' ? '/' : p.slice(0, -5);
+    res.writeHead(308, { Location: clean + q }).end(); return;
+  }
   if (p === '/') p = '/index.html';
+  else if (!path.extname(p) && fs.existsSync(path.join(root, p + '.html'))) p += '.html';
   const f = path.join(root, p);
   if (!f.startsWith(root)) { res.writeHead(403).end(); return; }
   fs.stat(f,(e,stat)=>{
-    if (e) { res.writeHead(404,{'Content-Type':'text/plain'}).end('404'); return; }
+    if (e) { res.writeHead(404,{'Content-Type':'text/html'}); fs.createReadStream(path.join(root,'404.html')).pipe(res); return; }
     if(!stat.isFile()){res.writeHead(404).end();return;}
     const headers={'Content-Type':types[path.extname(f).toLowerCase()]||'application/octet-stream','Cache-Control':'no-store','Accept-Ranges':'bytes'};
     let start=0,end=stat.size-1,status=200;

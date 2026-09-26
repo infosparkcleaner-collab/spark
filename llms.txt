@@ -5,9 +5,9 @@
 ## Pages
 
 - [Home](https://sparkbrakeclean.com/): product overview, how to use, applications, specifications, safety and FAQ
-- [Brake cleaner guide](https://sparkbrakeclean.com/brake-cleaner-guide.html): how to clean brakes step by step, chlorinated vs non-chlorinated brake cleaner, safe surfaces, safety rules
-- [About](https://sparkbrakeclean.com/about.html): who Spark is for and what the brand stands for
-- [Contact](https://sparkbrakeclean.com/contact.html): enquiry form, address and map
+- [Brake cleaner guide](https://sparkbrakeclean.com/brake-cleaner-guide): how to clean brakes step by step, chlorinated vs non-chlorinated brake cleaner, safe surfaces, safety rules
+- [About](https://sparkbrakeclean.com/about): who Spark is for and what the brand stands for
+- [Contact](https://sparkbrakeclean.com/contact): enquiry form, address and map
 
 ## Key facts
 

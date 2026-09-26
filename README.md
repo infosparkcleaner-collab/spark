@@ -10,6 +10,10 @@ byte-range support.
 
 ## Pages
 
+Pages are served without the .html extension (`/about`, `/contact`, `/brake-cleaner-guide`) by
+`cleanUrls` in `vercel.json`; `/about.html` redirects to `/about`. `serve.js` does the same locally,
+and unknown paths get `404.html`.
+
 | Page | Purpose |
 |---|---|
 | `index.html` | 3D product tour, workshop video, performance, how to use, applications, specifications, FAQ, trade, enquiry form |

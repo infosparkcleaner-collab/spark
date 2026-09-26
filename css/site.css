@@ -423,3 +423,8 @@ address{font-style:normal}
  .guide__cta{padding:26px 22px}.guide__cta .button{width:100%}
 }
 @media (max-width:699px) and (min-height:560px) and (max-height:620px) and (prefers-reduced-motion:no-preference){.js .stage .stage__plate{min-height:120px}.js .stage .stage__eyebrow{margin-bottom:6px}.js .stage .beats{min-height:96px}}
+
+/* 404 */
+.notfound__code{margin-bottom:10px;font-size:.875rem;font-weight:700;letter-spacing:.08em;color:var(--spark-ink)}
+.notfound__actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:32px}
+@media(max-width:699px){.notfound__actions{display:grid}}
