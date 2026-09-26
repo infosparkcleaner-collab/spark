@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /integration/
+
+Sitemap: https://sparkbrakeclean.com/sitemap.xml

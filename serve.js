@@ -2,7 +2,7 @@
 const http = require('http'), fs = require('fs'), path = require('path');
 const root = __dirname, port = process.env.PORT || 5173;
 const types = {'.html':'text/html','.css':'text/css','.js':'text/javascript','.json':'application/json',
-  '.jpg':'image/jpeg','.jpeg':'image/jpeg','.png':'image/png','.webp':'image/webp','.svg':'image/svg+xml','.woff2':'font/woff2','.mp4':'video/mp4'};
+  '.jpg':'image/jpeg','.jpeg':'image/jpeg','.png':'image/png','.webp':'image/webp','.svg':'image/svg+xml','.woff2':'font/woff2','.mp4':'video/mp4','.webmanifest':'application/manifest+json','.txt':'text/plain; charset=utf-8','.xml':'application/xml'};
 http.createServer((req,res)=>{
   let p = decodeURIComponent(req.url.split('?')[0]);
   if (p === '/') p = '/index.html';

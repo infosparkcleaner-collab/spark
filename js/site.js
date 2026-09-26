@@ -24,6 +24,35 @@
   var year = document.getElementById('year');
   if (year) year.textContent = String(new Date().getFullYear());
 
+  /* ---------- product views ----------
+     The four views under the can. Handled here, in the small script that
+     runs first, rather than in the WebGL module: the tabs have to work from
+     the first paint, and when WebGL is unavailable they still switch the
+     copy beside the photograph. On the pinned desktop run stage.js takes
+     over and drives the views from scroll position instead. */
+  var stage = document.querySelector('.stage');
+  var views = [].slice.call(document.querySelectorAll('.beat'));
+  var tabs = [].slice.call(document.querySelectorAll('.stage__steps button'));
+
+  if (stage && views.length && tabs.length) {
+    var selectView = function (i) {
+      views.forEach(function (v, n) { v.classList.toggle('is-on', n === i); });
+      tabs.forEach(function (t, n) {
+        t.classList.toggle('is-on', n === i);
+        if (n === i) t.setAttribute('aria-current', 'true');
+        else t.removeAttribute('aria-current');
+      });
+      document.dispatchEvent(new CustomEvent('spark:beat', { detail: i }));
+    };
+
+    tabs.forEach(function (t) {
+      t.addEventListener('click', function () {
+        if (stage.classList.contains('is-tour')) return;
+        selectView(Number(t.getAttribute('data-goto')) || 0);
+      });
+    });
+  }
+
   /* ---------- mobile menu ---------- */
   var burger = document.getElementById('burger');
   var menu = document.getElementById('menu');
@@ -177,8 +206,8 @@
   }
 
   /* ---------- enquiry form ----------
-     Validated and confirmed in the browser. Nothing is transmitted
-     yet — wire sendEnquiry() to the endpoint when it exists.
+     Validated in the browser, then posted to the Apps Script web app
+     set in ENQUIRY_ENDPOINT above.
   ------------------------------------------------------------- */
   var form = document.getElementById('enquiryForm');
 
@@ -209,17 +238,6 @@
       });
     });
 
-    /**
-     * Send the enquiry. Currently a no-op that resolves, so the
-     * confirmation path is real and testable.
-     *
-     * To start saving enquiries, replace the body with e.g.:
-     *   return fetch('/api/enquiries', {
-     *     method: 'POST',
-     *     headers: { 'Content-Type': 'application/json' },
-     *     body: JSON.stringify(data)
-     *   }).then(function (r) { if (!r.ok) throw new Error(r.status); });
-     */
     /* Posts the enquiry to the Apps Script web app, which writes the row to
        the sheet and sends both mails through Mailgun. The Mailgun key lives
        in that script's properties, never here.
@@ -282,7 +300,7 @@
         .then(function () {
           form.reset();
           if (done) {
-            done.textContent = 'Thanks — your enquiry is with us. We usually reply within two working days.';
+            done.textContent = 'Thanks, your enquiry is with us. We usually reply within two working days.';
             done.hidden = false;
           }
         })

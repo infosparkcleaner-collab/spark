@@ -1,0 +1,6 @@
+# Files the live site does not need. integration/ holds the Apps Script
+# source (with the sheet ID); serve.js is the local preview server.
+integration/
+serve.js
+README.md
+.gitattributes

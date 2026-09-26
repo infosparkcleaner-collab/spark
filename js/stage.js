@@ -6,7 +6,7 @@
    Degradation:
      no WebGL / module error -> the product photograph stays put
      reduced motion          -> no pin, instant pose changes on selection
-     narrow / short screens  -> selectable tour, no pin or idle animation
+     under 560px of height   -> selectable tour with a gentle idle sway
    The photograph is in the markup from the start and the beats read as
    ordinary stacked content, so the first paint never waits for any of
    this and nothing here is load-bearing.
@@ -23,7 +23,7 @@ const steps = [...document.querySelectorAll('.stage__steps button')];
 /* The markup already reads correctly on its own, so a failure here is
    simply "no 3D" — nothing needs undoing. */
 if (section && host && window.gsap && window.ScrollTrigger) {
-  boot().catch(() => section.classList.remove('is-live', 'is-tour', 'is-interactive'));
+  boot().catch(() => section.classList.remove('is-live', 'is-tour'));
 }
 
 /* ---------- beat plumbing (works with or without WebGL) ---------- */
@@ -50,37 +50,46 @@ async function boot() {
   gsap.registerPlugin(ScrollTrigger);
 
   const can = await buildCan();
-  section.classList.add('is-live', 'is-interactive');
+  section.classList.add('is-live');
+
+  // The phone address bar grows and shrinks while scrolling; re-measuring the
+  // pin on every one of those would make the can jump.
+  ScrollTrigger.config({ ignoreMobileResize: true });
+
+  const masthead = document.getElementById('masthead');
+  const navH = () => (masthead ? masthead.offsetHeight : 0);
 
   const mm = gsap.matchMedia();
 
   mm.add(
     {
-      /* 740px of height ruled out 1280x720 and any window with devtools open,
-         so the scroll story silently vanished on very ordinary laptops. The
-         pinned panel needs 640px, which 680 clears with room to spare. */
-      pinned: '(min-width: 1000px) and (min-height: 680px) and (prefers-reduced-motion: no-preference)',
-      flat: '(max-width: 999px), (max-height: 679px), (prefers-reduced-motion: reduce)',
+      /* The scroll tour runs at every width. The layouts in site.css fit the
+         whole hero into one viewport down to 560px of height, which covers
+         every phone held upright. Below that (a phone on its side) there is
+         no room to pin, so the can sways and follows the tabs instead. These
+         queries must stay identical to the ones in site.css. */
+      pinned: '(min-height: 560px) and (prefers-reduced-motion: no-preference)',
+      flat: '(max-height: 559px), (prefers-reduced-motion: reduce)',
       reduced: '(prefers-reduced-motion: reduce)'
     },
     ctx => {
       const { pinned, reduced } = ctx.conditions;
 
       if (!pinned) {
-        // Small screens use the same four controls without pinning the page.
-        can.setProgress(0);
-        can.setSway(false);
-        showBeat(0);
-        const onStep = e => {
-          const i = Number(e.currentTarget.dataset.goto);
-          showBeat(i);
-          can.setProgress([0, 0.5, 0.75, 1][i]);
+        // site.js owns the tabs here, so they work before this module has
+        // even downloaded. This only follows them with the can.
+        const current = document.querySelector('.beat.is-on');
+        const start = current ? Number(current.dataset.beat) : 0;
+        can.setProgress([0, 0.5, 0.75, 1][start] || 0);
+        can.setSway(!reduced);
+        if (reduced) can.snap();
+        const onBeat = e => {
+          can.setProgress([0, 0.5, 0.75, 1][e.detail] || 0);
           if (reduced) can.snap();
         };
-        steps.forEach(s => s.addEventListener('click', onStep));
-        if (reduced) can.snap();
+        document.addEventListener('spark:beat', onBeat);
         return () => {
-          steps.forEach(s => s.removeEventListener('click', onStep));
+          document.removeEventListener('spark:beat', onBeat);
           activeBeat = -1;
         };
       }
@@ -91,10 +100,11 @@ async function boot() {
 
       const trigger = ScrollTrigger.create({
         trigger: section,
-        start: 'top 80px',
-        end: () => '+=' + window.innerHeight * 2,
+        start: () => 'top ' + navH() + 'px',
+        end: () => '+=' + window.innerHeight * (innerWidth < 700 ? 1.6 : 2),
         pin: '.stage__pin',
         pinSpacing: true,
+        anticipatePin: 1,
         scrub: 0.6,
         invalidateOnRefresh: true,
         onUpdate: self => {
@@ -173,7 +183,7 @@ async function buildCan() {
 
   const steel = new THREE.MeshStandardMaterial({ color: 0xc9ced3, metalness: 0.92, roughness: 0.28 });
   const capRed = new THREE.MeshPhysicalMaterial({
-    color: 0xb51f0b, roughness: 0.4, metalness: 0.02, envMapIntensity: 0.65,
+    color: 0xd23d0e, roughness: 0.4, metalness: 0.02, envMapIntensity: 0.65,
     clearcoat: 0.28, clearcoatRoughness: 0.38
   });
   const black = new THREE.MeshStandardMaterial({ color: 0x0a0c0e, roughness: 0.38, metalness: 0.18 });
@@ -269,7 +279,10 @@ async function buildCan() {
   let visible = true;
   let dirty = true;      // forces a repaint after a resize or a state change
 
-  const REST_TURN = -0.35;   // a three-quarter view, not dead-on
+  /* Just off square. At -0.35 the curve of the can hid the S, so the hero
+     read "PARK"; this still shows the can is round while keeping the whole
+     wordmark legible. */
+  const REST_TURN = -0.06;
   const pose = { turn: REST_TURN, tilt: 0, lift: 0, y: 0, dolly: 0 };
   body.rotation.y = REST_TURN;
 
@@ -423,7 +436,13 @@ function softShadow() {
    showing the fallback photograph — which read as the site not updating. */
 async function labelTexture() {
   const views = [
-    { src: 'assets/img/product-front.webp', center: 674, radius: 158, top: 569, bottom: 1574, angle: 0 },
+    // Front: the studio shot, not the daylight snapshot. The can is 378px
+    // wide there against 276px, and evenly lit, so the face you see at rest
+    // is roughly a third sharper. Measured in its own 1400x1875 frame.
+    { src: 'assets/img/spark-studio-higgsfield.webp', center: 700, radius: 189, top: 477, bottom: 1653, angle: 0, refW: 1400, refH: 1875,
+      // The wordmark runs to about 66 degrees either side, past the old
+      // 60 degree seam, so the front owns the wrap out to roughly 76.
+      reach: 1.7 },
     { src: 'assets/img/product-side.webp', center: 649, radius: 157, top: 579, bottom: 1630, angle: Math.PI * 2 / 3 },
     { src: 'assets/img/product-back.webp', center: 665, radius: 150, top: 608, bottom: 1603, angle: -Math.PI * 2 / 3 }
   ];
@@ -439,8 +458,8 @@ async function labelTexture() {
 
   // Pull each label band out once, at source resolution.
   for (const v of views) {
-    v.fx = v.image.naturalWidth / 1373;
-    const fy = v.image.naturalHeight / 1824;
+    v.fx = v.image.naturalWidth / (v.refW || 1373);
+    const fy = v.image.naturalHeight / (v.refH || 1824);
     v.left = Math.max(0, Math.floor((v.center - v.radius) * v.fx) - 1);
     v.sy = Math.round(v.top * fy);
     v.sh = Math.round((v.bottom - v.top) * fy);
@@ -463,7 +482,9 @@ async function labelTexture() {
     let sel = views[0], best = Infinity, rel = 0;
     for (const v of views) {
       const a = Math.atan2(Math.sin(angle - v.angle), Math.cos(angle - v.angle));
-      if (Math.abs(a) < best) { best = Math.abs(a); sel = v; rel = a; }
+      // reach lets one view own more of the wrap than its neighbours
+      const d = Math.abs(a) / (v.reach || 1);
+      if (d < best) { best = d; sel = v; rel = a; }
     }
 
     let sx = Math.round((sel.center + Math.sin(rel) * sel.radius) * sel.fx) - sel.left;

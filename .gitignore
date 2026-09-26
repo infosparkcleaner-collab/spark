@@ -20,3 +20,14 @@ desktop.ini
 .claude/
 .codex/
 .mcp.json
+
+# local screenshot tooling
+.shots/
+.playwright-cli/
+
+# Not part of the website: old designs, design notes, source originals,
+# generated drafts and local tool lockfiles. Kept on disk, never deployed.
+_local/
+assets/new-imgs/
+output/
+skills-lock.json
