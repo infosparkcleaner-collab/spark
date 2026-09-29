@@ -29,13 +29,11 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/site.css">
-<link rel="preload" as="image" href="assets/img/spark-can-cutout.webp" fetchpriority="high">
+<link rel="preload" as="image" href="assets/img/spark-can-render.webp" fetchpriority="high">
 <script>document.documentElement.classList.add('js')</script>
-<link rel="preload" as="image" href="assets/img/spark-studio-higgsfield.webp">
-<link rel="preload" as="image" href="assets/img/product-side.webp">
-<link rel="preload" as="image" href="assets/img/product-back.webp">
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://sparkbrakeclean.com/#org","name":"Spark Brake & Parts Cleaner","url":"https://sparkbrakeclean.com/","logo":"https://sparkbrakeclean.com/assets/img/spark-logo.png","address":{"@type":"PostalAddress","streetAddress":"5925 Tomken Rd, Unit 11","addressLocality":"Mississauga","addressRegion":"ON","postalCode":"L4W 4L8","addressCountry":"CA"}},{"@type":"WebSite","@id":"https://sparkbrakeclean.com/#site","url":"https://sparkbrakeclean.com/","name":"Spark Brake & Parts Cleaner","inLanguage":"en-CA","publisher":{"@id":"https://sparkbrakeclean.com/#org"}},{"@type":"Product","@id":"https://sparkbrakeclean.com/#product","name":"Spark Brake & Parts Cleaner, 550 ml","description":"Professional-strength, non-chlorinated, low VOC brake and parts cleaner aerosol. Removes brake fluid, grease, oil and dirt, dries fast and leaves no residue. Safe on metals and most surfaces.","brand":{"@type":"Brand","name":"Spark"},"manufacturer":{"@id":"https://sparkbrakeclean.com/#org"},"category":"Automotive > Brake cleaners","image":["https://sparkbrakeclean.com/assets/img/spark-studio-white.webp","https://sparkbrakeclean.com/assets/img/spark-studio-dark.webp","https://sparkbrakeclean.com/assets/img/spark-bench.webp"],"additionalProperty":[{"@type":"PropertyValue","name":"Net content","value":"550 ml"},{"@type":"PropertyValue","name":"Formulation","value":"Non-chlorinated, low VOC"},{"@type":"PropertyValue","name":"Residue","value":"None"},{"@type":"PropertyValue","name":"Compatibility","value":"Metals and most surfaces"},{"@type":"PropertyValue","name":"Grade","value":"Professional and DIY"}]},{"@type":"FAQPage","@id":"https://sparkbrakeclean.com/#faq","mainEntity":[{"@type":"Question","name":"What is Spark Brake & Parts Cleaner?","acceptedAnswer":{"@type":"Answer","text":"Spark is a professional-strength, non-chlorinated aerosol cleaner in a 550 ml can. It removes brake fluid, grease, oil and dirt from brake systems, clutch components and metal parts, then evaporates without leaving a residue."}},{"@type":"Question","name":"Is Spark chlorinated or non-chlorinated?","acceptedAnswer":{"@type":"Answer","text":"Spark is non-chlorinated and low VOC. It is made without the chlorinated solvents used in traditional brake cleaners, so professional cleaning power comes with a lighter solvent load."}},{"@type":"Question","name":"What is the difference between chlorinated and non-chlorinated brake cleaner?","acceptedAnswer":{"@type":"Answer","text":"Chlorinated brake cleaners use organochlorine solvents such as tetrachloroethylene. They are not flammable, but they are more hazardous to breathe and are restricted in some places. Non-chlorinated cleaners like Spark use hydrocarbon and alcohol based solvents that are less toxic, but they are flammable, so they must be kept away from heat, sparks and open flame. See our full comparison."}},{"@type":"Question","name":"How do you use brake cleaner?","acceptedAnswer":{"@type":"Answer","text":"Work in a well-ventilated area on a cool part. Shake the can, hold it upright, remove the cap and spray the part from about 20 cm in one steady pass, working from the top down so contamination runs off. Let the part dry completely before refitting. Our step-by-step guide covers the whole job."}},{"@type":"Question","name":"Do I need to wipe the part after spraying?","acceptedAnswer":{"@type":"Answer","text":"No. The solvent carries contamination off the part and then evaporates, so no wiping is needed. Let the part dry fully before refitting or operating it."}},{"@type":"Question","name":"Is brake cleaner safe on plastic, rubber and paint?","acceptedAnswer":{"@type":"Answer","text":"Spark is safe on metals and most surfaces. Plastics, rubber and painted finishes vary, so test on a small hidden area first and check the directions on the can before use."}},{"@type":"Question","name":"Can I use brake cleaner on parts other than brakes?","acceptedAnswer":{"@type":"Answer","text":"Yes. Spark is also used on clutch plates and pressure plates, bearings, chains, jigs, workshop tools and machinery: anywhere old lubricant, oil film or shop dirt needs to come off metal cleanly."}},{"@type":"Question","name":"Is brake cleaner flammable?","acceptedAnswer":{"@type":"Answer","text":"Yes. Spark is extremely flammable. Use it only in a well-ventilated area, never spray it on hot components or near sparks or open flame, do not smoke while using it, and let it evaporate completely before the part goes back into service."}},{"@type":"Question","name":"Where can I buy Spark Brake & Parts Cleaner?","acceptedAnswer":{"@type":"Answer","text":"Spark is supplied from 5925 Tomken Rd, Unit 11, Mississauga, Ontario. Workshops, fleets and resellers can send an enquiry for supply and pricing."}},{"@type":"Question","name":"Do you offer bulk or distributor pricing?","acceptedAnswer":{"@type":"Answer","text":"Yes. Distributor terms and bulk supply are available. Tell us what you need and where you are through the enquiry form and we usually reply within two working days."}}]}]}</script>
 <script type="importmap">{"imports":{"three":"./assets/vendor/three.module.js"}}</script>
+<link rel="modulepreload" href="js/stage.js">
 </head>
 <body>
 
@@ -102,7 +100,7 @@
         </div>
 
         <div class="beat__actions">
-          <a class="button button--solid button--lg" href="#contact">Send an enquiry</a>
+          <a class="button button--solid button--lg" href="#contact" data-enquiry="distributor">Become a dealer</a>
           <a class="button button--line button--lg" href="#action">See it in action</a>
         </div>
 
@@ -118,8 +116,8 @@
         <span class="stage__size">550 <small>ml</small></span>
         <div class="stage__canvas" id="canHost"></div>
         <img class="stage__photo" id="canPhoto"
-             src="assets/img/spark-can-cutout.webp" width="1400" height="1875"
-             alt="Spark Brake &amp; Parts Cleaner, a black 550 ml aerosol can with a red cap, photographed against a plain background."
+             src="assets/img/spark-can-render.webp" width="880" height="1560"
+             alt="Spark Brake &amp; Parts Cleaner, a black 550 ml aerosol can with an orange-red cap."
              fetchpriority="high" decoding="async">
         <figcaption class="stage__grab">Drag the can to turn it</figcaption>
       </figure>
@@ -143,31 +141,27 @@
   <div class="wrap action__in">
     <div class="action__text">
       <h2 class="h2">A cleaner finish.<br>A job well done.</h2>
-      <p class="lede">Cap off, nozzle down, one pass across the disc. No soaking, no wiping, and no waiting for the part to dry before it goes back on the car.</p>
+      <p class="lede">Watch the spray lift grease and brake dust from the disc, revealing a cleaner metal surface. Let the part dry fully before refitting.</p>
       <ul class="ticks">
-        <li>Sprays at full pressure from the first press</li>
-        <li>Flushes contamination off the disc face and calliper</li>
-        <li>Flashes off clean, so parts are ready to refit</li>
+        <li>Direct the spray onto the contaminated area</li>
+        <li>Flush grease, oil and dirt off the disc face and calliper</li>
+        <li>Allow the cleaner to evaporate before refitting</li>
       </ul>
-      <p class="note">Illustrative demonstration. Results vary with the level and type of contamination.</p>
+      <p class="note">AI-generated illustrative demonstration. Results vary with the level and type of contamination.</p>
     </div>
 
     <figure class="player" id="player">
       <video class="player__video" id="filmVideo"
              muted loop playsinline preload="none"
-             poster="assets/img/spark-hands-start.webp"
+             data-poster="assets/img/spark-dirty-to-clean-poster.webp"
              width="960" height="960"
-             data-src="assets/video/spark-hand-demo.mp4"
-             aria-label="Gloved hands lift the cap from a Spark can and spray a brake disc in a workshop."></video>
+             data-src="assets/video/spark-dirty-to-clean.mp4"
+             aria-label="AI illustration of a gloved hand spraying Spark onto a greasy brake disc. A visible spray sweeps across the disc as the dark grime clears to reveal silver metal."></video>
 
       <figcaption class="player__bar">
         <button class="player__btn" id="filmPlay" type="button" aria-label="Pause video" data-state="playing">
           <svg class="i-pause" viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="5" width="3.5" height="14" rx="1"/><rect x="13.5" y="5" width="3.5" height="14" rx="1"/></svg>
           <svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg>
-        </button>
-        <button class="player__btn" id="filmSound" type="button" aria-label="Turn sound on" aria-pressed="false">
-          <svg class="i-muted" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5h3.5L12 5.5v13L7.5 14.5H4z"/><path class="s" d="M16 9.5l5 5M21 9.5l-5 5"/></svg>
-          <svg class="i-sound" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5h3.5L12 5.5v13L7.5 14.5H4z"/><path class="s" d="M15.5 9a4 4 0 010 6M18 6.5a7.5 7.5 0 010 11"/></svg>
         </button>
         <span class="player__label">Workshop demonstration</span>
       </figcaption>

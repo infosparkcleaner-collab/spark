@@ -144,7 +144,7 @@ async function buildCan() {
   renderer.setPixelRatio(Math.min(devicePixelRatio, innerWidth < 700 ? 1.5 : 2));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.02;
+  renderer.toneMappingExposure = 0.95;
   renderer.setClearColor(0x000000, 0);
   renderer.domElement.setAttribute('aria-hidden', 'true');
   host.appendChild(renderer.domElement);
@@ -161,18 +161,22 @@ async function buildCan() {
   env.dispose();
   pmrem.dispose();
 
-  scene.add(new THREE.HemisphereLight(0xffffff, 0xd8d4cb, 2.1));
+  /* Low ambient and a single strong key: a flood of soft light flattened the
+     cap into one bright orange and made the can read as a cartoon. The label
+     carries its own photographed lighting and ignores these (see below). */
+  scene.add(new THREE.HemisphereLight(0xffffff, 0x2a2622, 0.75));
 
-  const key = new THREE.DirectionalLight(0xffffff, 2.4);
+  const key = new THREE.DirectionalLight(0xffffff, 2.6);
   key.position.set(-3.4, 5.6, 6.4);
   scene.add(key);
 
-  const fill = new THREE.DirectionalLight(0xf4f5f6, 1.5);
+  const fill = new THREE.DirectionalLight(0xf4f5f6, 0.45);
   fill.position.set(4.6, 1.2, 4.2);
   scene.add(fill);
 
-  const back = new THREE.DirectionalLight(0xffffff, 1.1);
-  back.position.set(0, 3.5, -6);
+  // rim light from behind separates the black can from the dark stage
+  const back = new THREE.DirectionalLight(0xffffff, 1.6);
+  back.position.set(2.5, 3.5, -6);
   scene.add(back);
 
   const rig = new THREE.Group();
@@ -182,9 +186,11 @@ async function buildCan() {
   rig.add(body);
 
   const steel = new THREE.MeshStandardMaterial({ color: 0xc9ced3, metalness: 0.92, roughness: 0.28 });
+  // Sampled from the studio photograph of the real cap: a deep red-orange in
+  // hard-gloss plastic, so most of its brightness comes from highlights.
   const capRed = new THREE.MeshPhysicalMaterial({
-    color: 0xd23d0e, roughness: 0.4, metalness: 0.02, envMapIntensity: 0.65,
-    clearcoat: 0.28, clearcoatRoughness: 0.38
+    color: 0xc0360a, roughness: 0.3, metalness: 0, envMapIntensity: 0.9,
+    clearcoat: 1, clearcoatRoughness: 0.07
   });
   const black = new THREE.MeshStandardMaterial({ color: 0x0a0c0e, roughness: 0.38, metalness: 0.18 });
 
@@ -237,21 +243,53 @@ async function buildCan() {
   cap.add(new THREE.Mesh(new THREE.LatheGeometry(capProfile, 128), capRed));
   ring(0.644, 0.012, -0.47, capRed, cap);
 
-  // label, projected from the three product photographs
-  const tex = await labelTexture();
+  /* The label wrap is cut from the three product photographs ahead of time
+     (_local/tools/bake-can.html), so a visitor downloads one image instead of
+     three and nothing is rebuilt pixel by pixel in the browser. */
+  const tex = await new THREE.TextureLoader().loadAsync('assets/img/can-wrap.webp');
   tex.colorSpace = THREE.SRGBColorSpace;
   tex.anisotropy = Math.min(renderer.capabilities.getMaxAnisotropy(), 16);
 
-  const label = new THREE.Mesh(
-    new THREE.CylinderGeometry(0.635, 0.635, 3.48, 128, 1, true),
-    new THREE.MeshPhysicalMaterial({
-      map: tex, roughness: 0.44, metalness: 0.06,
-      clearcoat: 0.3, clearcoatRoughness: 0.32
-    })
-  );
+  /* The wrap is cut from photographs, which already hold the real can's
+     shading and colour. Lighting it again washed it out, so it is shown as
+     photographed, and a clear lacquer shell on top adds only the moving
+     highlights (additive black: everything but the reflections is invisible). */
+  const labelGeo = new THREE.CylinderGeometry(0.635, 0.635, 3.48, 128, 1, true);
+  // Only a gentle darkening towards the silhouette is added, so the wrap
+  // still turns like a cylinder instead of a flat sticker.
+  const label = new THREE.Mesh(labelGeo, new THREE.ShaderMaterial({
+    uniforms: { map: { value: tex } },
+    vertexShader: `
+      varying vec2 vUv; varying vec3 vN; varying vec3 vV;
+      void main() {
+        vUv = uv;
+        vec4 mv = modelViewMatrix * vec4(position, 1.0);
+        vN = normalize(normalMatrix * normal);
+        vV = -mv.xyz;
+        gl_Position = projectionMatrix * mv;
+      }`,
+    fragmentShader: `
+      uniform sampler2D map;
+      varying vec2 vUv; varying vec3 vN; varying vec3 vV;
+      void main() {
+        vec3 c = texture2D(map, vUv).rgb;
+        float facing = clamp(dot(normalize(vN), normalize(vV)), 0.0, 1.0);
+        gl_FragColor = vec4(c * mix(0.62, 1.0, smoothstep(0.0, 0.7, facing)), 1.0);
+        #include <colorspace_fragment>
+      }`
+  }));
   label.position.y = -0.3;
   label.rotation.y = Math.PI;
   body.add(label);
+
+  const lacquer = new THREE.Mesh(labelGeo, new THREE.MeshPhysicalMaterial({
+    color: 0x000000, roughness: 0.22, metalness: 0, envMapIntensity: 0.55,
+    clearcoat: 0.6, clearcoatRoughness: 0.12,
+    transparent: true, blending: THREE.AdditiveBlending, depthWrite: false
+  }));
+  lacquer.position.y = -0.3;
+  lacquer.scale.set(1.002, 1, 1.002);
+  body.add(lacquer);
 
   // contact shadow
   const shadow = new THREE.Mesh(
@@ -424,87 +462,5 @@ function softShadow() {
   g.addColorStop(1, 'rgba(24,26,30,0)');
   x.fillStyle = g;
   x.fillRect(0, 0, 128, 128);
-  return new THREE.CanvasTexture(c);
-}
-
-/* The three product photographs are column-sliced into one cylindrical
-   wrap. Coordinates are expressed against the 1373x1824 reference frame the
-   shots were measured in, then scaled to whatever the files are now.
-
-   This runs on raw pixel buffers rather than one canvas draw per column.
-   The draw-call version cost about eight seconds, during which the page sat
-   showing the fallback photograph — which read as the site not updating. */
-async function labelTexture() {
-  const views = [
-    // Front: the studio shot, not the daylight snapshot. The can is 378px
-    // wide there against 276px, and evenly lit, so the face you see at rest
-    // is roughly a third sharper. Measured in its own 1400x1875 frame.
-    { src: 'assets/img/spark-studio-higgsfield.webp', center: 700, radius: 189, top: 477, bottom: 1653, angle: 0, refW: 1400, refH: 1875,
-      // The wordmark runs to about 66 degrees either side, past the old
-      // 60 degree seam, so the front owns the wrap out to roughly 76.
-      reach: 1.7 },
-    { src: 'assets/img/product-side.webp', center: 649, radius: 157, top: 579, bottom: 1630, angle: Math.PI * 2 / 3 },
-    { src: 'assets/img/product-back.webp', center: 665, radius: 150, top: 608, bottom: 1603, angle: -Math.PI * 2 / 3 }
-  ];
-
-  await Promise.all(views.map(async v => {
-    v.image = new Image();
-    v.image.src = v.src;
-    await v.image.decode();
-  }));
-
-  const OUT_W = 2048;
-  const OUT_H = 1024;
-
-  // Pull each label band out once, at source resolution.
-  for (const v of views) {
-    v.fx = v.image.naturalWidth / (v.refW || 1373);
-    const fy = v.image.naturalHeight / (v.refH || 1824);
-    v.left = Math.max(0, Math.floor((v.center - v.radius) * v.fx) - 1);
-    v.sy = Math.round(v.top * fy);
-    v.sh = Math.round((v.bottom - v.top) * fy);
-    v.sw = Math.min(v.image.naturalWidth - v.left, Math.ceil(2 * v.radius * v.fx) + 3);
-
-    const band = document.createElement('canvas');
-    band.width = v.sw;
-    band.height = v.sh;
-    const bx = band.getContext('2d', { willReadFrequently: true });
-    bx.drawImage(v.image, v.left, v.sy, v.sw, v.sh, 0, 0, v.sw, v.sh);
-    v.px = bx.getImageData(0, 0, v.sw, v.sh).data;
-  }
-
-  const out = new ImageData(OUT_W, OUT_H);
-  const o = out.data;
-
-  for (let col = 0; col < OUT_W; col++) {
-    const angle = (col / OUT_W - 0.5) * Math.PI * 2;
-
-    let sel = views[0], best = Infinity, rel = 0;
-    for (const v of views) {
-      const a = Math.atan2(Math.sin(angle - v.angle), Math.cos(angle - v.angle));
-      // reach lets one view own more of the wrap than its neighbours
-      const d = Math.abs(a) / (v.reach || 1);
-      if (d < best) { best = d; sel = v; rel = a; }
-    }
-
-    let sx = Math.round((sel.center + Math.sin(rel) * sel.radius) * sel.fx) - sel.left;
-    if (sx < 0) sx = 0;
-    else if (sx >= sel.sw) sx = sel.sw - 1;
-
-    const px = sel.px, sw = sel.sw, sh = sel.sh;
-    for (let y = 0; y < OUT_H; y++) {
-      const si = (((y * sh / OUT_H) | 0) * sw + sx) * 4;
-      const di = (y * OUT_W + col) * 4;
-      o[di] = px[si];
-      o[di + 1] = px[si + 1];
-      o[di + 2] = px[si + 2];
-      o[di + 3] = 255;
-    }
-  }
-
-  const c = document.createElement('canvas');
-  c.width = OUT_W;
-  c.height = OUT_H;
-  c.getContext('2d').putImageData(out, 0, 0);
   return new THREE.CanvasTexture(c);
 }

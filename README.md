@@ -50,7 +50,21 @@ and unknown paths get `404.html`.
   single viewport.
 - Shorter screens (a phone on its side): tabs select the views and the can sways.
 - Reduced motion: no pin, no sway, poses change instantly.
-- No WebGL or JavaScript: the product photograph and all copy remain.
+- No WebGL or JavaScript: the rendered can image and all copy remain.
+
+### The can stage
+
+Two images are baked ahead of time so the hero loads fast and never jumps:
+
+- `assets/img/can-wrap.webp`: the label wrap, cut from the three product
+  photos. Re-bake by opening http://localhost:5173/_local/tools/bake-can.html
+  (with `node serve.js` running) and saving the download over it.
+- `assets/img/spark-can-render.webp`: the placeholder shown until WebGL is
+  ready. It is a render of the 3D can itself at 440×780 CSS px (2× pixels,
+  transparent), so the swap is invisible. Re-render it after any change to the
+  can's lighting, materials, resting pose or label wrap: load the home page at
+  2× device scale, force `#canHost` to 440×780 with everything else hidden,
+  screenshot it with a transparent background, and save as WebP (quality ~0.86).
 
 ## SEO
 

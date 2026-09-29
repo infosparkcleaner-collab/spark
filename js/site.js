@@ -86,7 +86,7 @@
   }
 
   /* ---------- workshop film ----------
-     Muted, looping, autoplaying — but the 8.6 MB file is only
+     Muted, looping, autoplaying — but the 4.5 MB file is only
      fetched once the section is actually near the viewport, and
      playback pauses whenever it scrolls away or the tab is hidden.
   ------------------------------------------------------------- */
@@ -126,12 +126,21 @@
 
     setPlayState(wantsToPlay);
 
+    /* The poster is attached only as the section approaches, so its download
+       never competes with the hero can at page load. */
+    var poster = video.getAttribute('data-poster');
+    var showPoster = function () { if (poster && !video.poster) video.poster = poster; };
+
     if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function (entries, obs) {
+        if (entries[0].isIntersecting) { showPoster(); obs.disconnect(); }
+      }, { rootMargin: '300px 0px' }).observe(video);
       new IntersectionObserver(function (entries) {
         inView = entries[0].isIntersecting;
         sync();
       }, { threshold: 0.25 }).observe(video);
     } else {
+      showPoster();
       inView = true;
       sync();
     }
@@ -210,6 +219,17 @@
      set in ENQUIRY_ENDPOINT above.
   ------------------------------------------------------------- */
   var form = document.getElementById('enquiryForm');
+
+  /* Buttons with data-enquiry (the hero's "Become a dealer") jump to the
+     form with that enquiry type already chosen. */
+  var enquiryType = document.getElementById('f-type');
+  if (enquiryType) {
+    Array.prototype.forEach.call(document.querySelectorAll('[data-enquiry]'), function (link) {
+      link.addEventListener('click', function () {
+        enquiryType.value = link.getAttribute('data-enquiry');
+      });
+    });
+  }
 
   if (form) {
     var done = document.getElementById('formDone');
