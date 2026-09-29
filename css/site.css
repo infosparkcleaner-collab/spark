@@ -262,6 +262,7 @@ button{cursor:pointer}button,a,summary{touch-action:manipulation}table{border-co
 .contact .textlink:hover,.foot .textlink:hover{color:#fff}
 .button--ghost{margin-top:32px;border-color:#ffffff4d;color:#fff;background:transparent}.button--ghost:hover{background:#ffffff14}
 .foot__addr{grid-column:1;font-style:normal;font-size:.8125rem;line-height:1.6;color:#a6afb7}
+.foot__tel{color:inherit;text-decoration:underline;text-decoration-color:var(--spark);text-decoration-thickness:1.5px;text-underline-offset:3px}.foot__tel:hover{color:#fff}
 address{font-style:normal}
 
 /* ============================================================
