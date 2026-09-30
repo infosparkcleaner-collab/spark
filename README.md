@@ -20,6 +20,7 @@ and unknown paths get `404.html`.
 | `brake-cleaner-guide.html` | Long-form guide: how to use brake cleaner, chlorinated vs non-chlorinated, safety |
 | `about.html` | Brand story and trade call to action |
 | `contact.html` | Enquiry form, address and Google map |
+| `become-a-dealer.html` | Ontario dealer and distributor page: what is supplied, how to apply, FAQ |
 
 ## Files
 
@@ -68,10 +69,33 @@ Two images are baked ahead of time so the hero loads fast and never jumps:
 
 ## SEO
 
-Each page has a canonical URL, Open Graph tags and JSON-LD (Organization,
-Product, FAQPage, HowTo, Article, LocalBusiness, BreadcrumbList as relevant).
+Each page has a canonical URL, Open Graph tags and JSON-LD (LocalBusiness,
+Product, FAQPage, HowTo, Article, BreadcrumbList as relevant). The same
+LocalBusiness entity (`#org`, service area Ontario, phone) is used on the home
+and contact pages; keep it identical if you edit either. FAQ answers in the
+JSON-LD must match the visible text word for word. `robots.txt` names the
+search and AI crawlers, and `llms.txt` states the business facts in plain text.
+Update `sitemap.xml` and `llms.txt` when a page is added.
+
 The canonical site URL is written into the pages, `sitemap.xml`, `robots.txt`
 and `llms.txt`; change it everywhere when the production domain is set.
+
+Off-site work (Google Business Profile, directories, Safety Data Sheet) and the
+questions still open are in `_local/docs/seo-audit-ontario.html`.
+
+## Analytics
+
+Every page loads Vercel Web Analytics with two small tags before `</body>`
+(`/_vercel/insights/script.js`, no package needed). It only starts once
+**Analytics > Enable** is switched on for the project in the Vercel dashboard
+and the site is deployed; until then the request returns 404 and nothing is
+collected. The dashboard also shows a project-specific script path that
+blockers are less likely to catch; if you prefer it, swap it into the `src` on
+all six pages. `serve.js` answers the route with an empty script locally.
+
+Google Analytics 4 (tag `G-R41JT9PP5W`) is installed in the `<head>` of the same
+six pages, as Google's standard gtag.js snippet. Visits from `localhost` are
+counted like any other unless a data filter excludes them in Google Analytics.
 
 ## Not in the repository
 

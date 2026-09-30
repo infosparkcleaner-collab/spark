@@ -12,6 +12,8 @@ http.createServer((req,res)=>{
     const clean = p === '/index.html' ? '/' : p.slice(0, -5);
     res.writeHead(308, { Location: clean + q }).end(); return;
   }
+  // Vercel Web Analytics is served by Vercel itself; answer it with an empty script locally.
+  if (p.startsWith('/_vercel/')) { res.writeHead(200,{'Content-Type':'text/javascript'}).end(''); return; }
   if (p === '/') p = '/index.html';
   else if (!path.extname(p) && fs.existsSync(path.join(root, p + '.html'))) p += '.html';
   const f = path.join(root, p);

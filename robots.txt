@@ -1,5 +1,34 @@
+# Search engines and AI assistants are welcome to read this site so that
+# they can state Spark's facts correctly. Everything public is allowed.
 User-agent: *
 Allow: /
 Disallow: /integration/
+
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-SearchBot
+Allow: /
+
+User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
 
 Sitemap: https://sparkbrakeclean.com/sitemap.xml
