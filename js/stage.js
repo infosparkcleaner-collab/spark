@@ -144,7 +144,7 @@ async function buildCan() {
   renderer.setPixelRatio(Math.min(devicePixelRatio, innerWidth < 700 ? 1.5 : 2));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 0.95;
+  renderer.toneMappingExposure = 0.9;
   renderer.setClearColor(0x000000, 0);
   renderer.domElement.setAttribute('aria-hidden', 'true');
   host.appendChild(renderer.domElement);
@@ -166,7 +166,7 @@ async function buildCan() {
      carries its own photographed lighting and ignores these (see below). */
   scene.add(new THREE.HemisphereLight(0xffffff, 0x2a2622, 0.75));
 
-  const key = new THREE.DirectionalLight(0xffffff, 2.6);
+  const key = new THREE.DirectionalLight(0xffffff, 2.2);
   key.position.set(-3.4, 5.6, 6.4);
   scene.add(key);
 
@@ -175,7 +175,7 @@ async function buildCan() {
   scene.add(fill);
 
   // rim light from behind separates the black can from the dark stage
-  const back = new THREE.DirectionalLight(0xffffff, 1.6);
+  const back = new THREE.DirectionalLight(0xffffff, 1.0);
   back.position.set(2.5, 3.5, -6);
   scene.add(back);
 
@@ -186,11 +186,12 @@ async function buildCan() {
   rig.add(body);
 
   const steel = new THREE.MeshStandardMaterial({ color: 0xc9ced3, metalness: 0.92, roughness: 0.28 });
-  // Sampled from the studio photograph of the real cap: a deep red-orange in
-  // hard-gloss plastic, so most of its brightness comes from highlights.
+  // Tuned against the studio photograph of the real cap (mean colour about
+  // 199,50,10): a satin, saturated red-orange. Mirror-gloss and a strong
+  // environment reflection turn it pink and toy-like.
   const capRed = new THREE.MeshPhysicalMaterial({
-    color: 0xc0360a, roughness: 0.3, metalness: 0, envMapIntensity: 0.9,
-    clearcoat: 1, clearcoatRoughness: 0.07
+    color: 0xd63e08, roughness: 0.45, metalness: 0, envMapIntensity: 0.16, specularIntensity: 0.1,
+    clearcoat: 0.12, clearcoatRoughness: 0.35
   });
   const black = new THREE.MeshStandardMaterial({ color: 0x0a0c0e, roughness: 0.38, metalness: 0.18 });
 
@@ -220,7 +221,7 @@ async function buildCan() {
   // valve
   const valve = new THREE.Mesh(
     new THREE.CylinderGeometry(0.17, 0.2, 0.3, 64),
-    new THREE.MeshStandardMaterial({ color: 0xdedcd7, roughness: 0.36, metalness: 0.1 })
+    new THREE.MeshStandardMaterial({ color: 0xb8b6b1, roughness: 0.4, metalness: 0.1 })
   );
   valve.position.y = 2.0;
   body.add(valve);
@@ -283,8 +284,8 @@ async function buildCan() {
   body.add(label);
 
   const lacquer = new THREE.Mesh(labelGeo, new THREE.MeshPhysicalMaterial({
-    color: 0x000000, roughness: 0.22, metalness: 0, envMapIntensity: 0.55,
-    clearcoat: 0.6, clearcoatRoughness: 0.12,
+    color: 0x000000, roughness: 0.22, metalness: 0, envMapIntensity: 0.1,
+    clearcoat: 0.14, clearcoatRoughness: 0.14,
     transparent: true, blending: THREE.AdditiveBlending, depthWrite: false
   }));
   lacquer.position.y = -0.3;
@@ -294,7 +295,7 @@ async function buildCan() {
   // contact shadow
   const shadow = new THREE.Mesh(
     new THREE.PlaneGeometry(3.4, 3.4),
-    new THREE.MeshBasicMaterial({ map: softShadow(), transparent: true, opacity: 0.4, depthWrite: false })
+    new THREE.MeshBasicMaterial({ map: softShadow(), transparent: true, opacity: 0.5, depthWrite: false })
   );
   shadow.rotation.x = -Math.PI / 2;
   shadow.position.y = -2.3;
@@ -378,7 +379,7 @@ async function buildCan() {
     camera.position.lerp(tmp, snapNext ? 1 : 0.12);
     camera.lookAt(0, frameDrop, 0);
 
-    shadow.material.opacity = 0.4 - pose.lift * 0.12;
+    shadow.material.opacity = 0.5 - pose.lift * 0.14;
 
     // Everything has settled and nothing is driving it — stop painting.
     if (moved < 0.0004 && !dragging && !dirty) return;

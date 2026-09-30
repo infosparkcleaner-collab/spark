@@ -224,6 +224,11 @@
      form with that enquiry type already chosen. */
   var enquiryType = document.getElementById('f-type');
   if (enquiryType) {
+    // Arriving from a link like /contact?enquiry=distributor (the nav button).
+    var wanted = (new URLSearchParams(window.location.search)).get('enquiry');
+    if (wanted && Array.prototype.some.call(enquiryType.options, function (o) { return o.value === wanted; })) {
+      enquiryType.value = wanted;
+    }
     Array.prototype.forEach.call(document.querySelectorAll('[data-enquiry]'), function (link) {
       link.addEventListener('click', function () {
         enquiryType.value = link.getAttribute('data-enquiry');

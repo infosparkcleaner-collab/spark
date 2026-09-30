@@ -41,7 +41,7 @@ button{cursor:pointer}button,a,summary{touch-action:manipulation}table{border-co
 .burger span:first-child{top:17px}.burger span:last-child{top:25px}
 .burger[aria-expanded=true] span:first-child{transform:translateY(4px) rotate(45deg)}.burger[aria-expanded=true] span:last-child{transform:translateY(-4px) rotate(-45deg)}
 /* The can is the hero. Its stage is contained at every viewport size. */
-.stage{background:#0a0a0c;color:#f4f5f6}.stage__pin{padding:36px 0 48px;background:radial-gradient(60% 70% at 72% 45%,#2a1406 0%,#0d0d0f 60%,#08080a 100%)}
+.stage{background:#0a0a0c;color:#f4f5f6}.stage__pin{padding:36px 0 48px;background:radial-gradient(60% 70% at 72% 45%,#170b04 0%,#0d0d0f 60%,#08080a 100%)}
 .stage__grid{max-width:var(--wrap);margin:auto;padding-inline:var(--gut);display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px 6%;align-items:center}
 .stage__copy{grid-row:1/3;min-width:0;padding-block:24px}
 
@@ -53,14 +53,14 @@ button{cursor:pointer}button,a,summary{touch-action:manipulation}table{border-co
 .js .stage .beat.is-on{visibility:visible;opacity:1;pointer-events:auto}
 .factrow{display:grid;grid-template-columns:repeat(4,auto);justify-content:start;gap:16px 0;margin-top:40px;max-width:560px}.factrow__item{padding-inline:22px;border-left:1px solid var(--rule)}.factrow__item:first-child{padding-left:0;border-left:0}
 .factrow__item{min-width:0}.factrow dt{font-size:.75rem;color:var(--muted)}.factrow dd{font-size:.9375rem;font-weight:650;margin-top:2px}
-.stage__plate{position:relative;isolation:isolate;grid-column:2;width:100%;height:clamp(460px,68vh,680px);overflow:hidden;background:radial-gradient(42% 40% at 50% 46%,#fc5a0070 0%,#fc5a0024 45%,transparent 72%);border-radius:8px}
+.stage__plate{position:relative;isolation:isolate;grid-column:2;width:100%;height:clamp(460px,68vh,680px);overflow:hidden;background:radial-gradient(42% 40% at 50% 46%,#fc5a0034 0%,#fc5a0010 45%,transparent 72%);border-radius:8px}
 
 .stage__size{position:absolute;z-index:2;pointer-events:none;top:25px;right:26px;font-size:1.5rem;line-height:1;font-weight:700;letter-spacing:-.05em;color:#e1e5e8}.stage__size small{font-size:.75rem;font-weight:500;letter-spacing:0}
 .stage__plate{--ct:25px;--cb:34px}.stage__canvas{position:absolute;inset:var(--ct) 0 var(--cb);opacity:0;transition:opacity .35s ease}.stage__canvas canvas{width:100%;height:100%;display:block;touch-action:pan-y}
 
 .stage__photo{position:absolute;left:0;top:var(--ct);width:100%;height:calc(100% - var(--ct) - var(--cb));object-fit:contain;pointer-events:none;transition:opacity .35s ease}
 .stage__grab{position:absolute;bottom:18px;left:0;right:0;text-align:center;font-size:.75rem;color:var(--muted);opacity:0;pointer-events:none}
-.stage.is-live .stage__plate{background:radial-gradient(42% 40% at 50% 46%,#fc5a0070 0%,#fc5a0024 45%,transparent 72%)}
+.stage.is-live .stage__plate{background:radial-gradient(42% 40% at 50% 46%,#fc5a0034 0%,#fc5a0010 45%,transparent 72%)}
 .stage.is-live .stage__size,.stage.is-live .stage__grab{color:#e1e5e8}
 .stage.is-live .stage__canvas{opacity:1;cursor:grab}.stage.is-live .stage__photo{opacity:0}.stage.is-live .stage__grab{opacity:1}.stage.is-live .is-dragging{cursor:grabbing}
 .stage__rail{display:none;grid-column:2;min-width:0}.js .stage .stage__rail{display:block}
