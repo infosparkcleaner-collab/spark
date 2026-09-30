@@ -97,6 +97,13 @@ Google Analytics 4 (tag `G-R41JT9PP5W`) is installed in the `<head>` of the same
 six pages, as Google's standard gtag.js snippet. Visits from `localhost` are
 counted like any other unless a data filter excludes them in Google Analytics.
 
+Google Tag Manager (container `GTM-KS6Z4S7H`) is also installed: the script high
+in the `<head>` and the `<noscript>` fallback straight after `<body>`, on the
+same six pages. Do not also add a GA4 config tag for `G-R41JT9PP5W` inside that
+container, or every page view is counted twice; either manage Google Analytics
+from the container and remove the direct gtag.js snippet, or keep the direct
+snippet and leave GA4 out of the container.
+
 ## Not in the repository
 
 Old designs, design notes and full-size source photos live in `_local/`, which
