@@ -21,6 +21,7 @@ and unknown paths get `404.html`.
 | `about.html` | Brand story and trade call to action |
 | `contact.html` | Enquiry form, address and Google map |
 | `become-a-dealer.html` | Ontario dealer and distributor page: what is supplied, how to apply, FAQ |
+| `privacy.html` | Privacy policy: what is collected, cookies, providers, rights |
 
 ## Files
 
@@ -86,23 +87,25 @@ questions still open are in `_local/docs/seo-audit-ontario.html`.
 ## Analytics
 
 Every page loads Vercel Web Analytics with two small tags before `</body>`
-(`/_vercel/insights/script.js`, no package needed). It only starts once
-**Analytics > Enable** is switched on for the project in the Vercel dashboard
-and the site is deployed; until then the request returns 404 and nothing is
-collected. The dashboard also shows a project-specific script path that
-blockers are less likely to catch; if you prefer it, swap it into the `src` on
-all six pages. `serve.js` answers the route with an empty script locally.
+(`/_vercel/insights/script.js`, no package needed). It is cookie-free and
+aggregated, so it is not behind the consent banner. It only starts once
+**Analytics > Enable** is switched on in the Vercel dashboard. `serve.js`
+answers the route with an empty script locally.
 
-Google Analytics 4 (tag `G-R41JT9PP5W`) is installed in the `<head>` of the same
-six pages, as Google's standard gtag.js snippet. Visits from `localhost` are
-counted like any other unless a data filter excludes them in Google Analytics.
+Google Analytics 4 (`G-R41JT9PP5W`) and Google Tag Manager (`GTM-KS6Z4S7H`)
+are loaded by `js/consent.js` and **only after a visitor accepts** in the privacy
+banner. The pages carry no Google snippet of their own and no GTM `<noscript>`
+fallback (it cannot ask for consent). Change a tag id in `js/consent.js` only.
+Consent Mode starts every signal as denied; accepting grants `analytics_storage`
+only. The choice is stored in local storage as `spark-consent` and asked again
+after 12 months. The footer "Privacy settings" button (`data-privacy-settings`)
+reopens the banner. Do not add a GA4 tag for `G-R41JT9PP5W` inside the GTM
+container, or page views are counted twice. If advertising tags are ever added
+there, also update `/privacy` and the banner wording. Visits from `localhost`
+count once accepted, unless a data filter excludes them.
 
-Google Tag Manager (container `GTM-KS6Z4S7H`) is also installed: the script high
-in the `<head>` and the `<noscript>` fallback straight after `<body>`, on the
-same six pages. Do not also add a GA4 config tag for `G-R41JT9PP5W` inside that
-container, or every page view is counted twice; either manage Google Analytics
-from the container and remove the direct gtag.js snippet, or keep the direct
-snippet and leave GA4 out of the container.
+The policy is `privacy.html` (`/privacy`). Keep its cookie table, provider list
+and "what we collect" section in step with the tags and form fields actually in use.
 
 ## Not in the repository
 

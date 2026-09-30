@@ -9,7 +9,7 @@
 
   /* Paste the Apps Script /exec URL here once the web app is deployed.
      Empty means the form still validates and confirms, but sends nothing. */
-  var ENQUIRY_ENDPOINT = 'https://script.google.com/macros/s/AKfycbyYk5BDGG5EBzqN-RSi8YUBF7i0is33zCtR4iDOE0QOWfv19uC9iTzaZdLzQ9_I-4Nq/exec';
+  var ENQUIRY_ENDPOINT = 'https://script.google.com/macros/s/AKfycby9b6aTaUWDuMGiaF894KQHZ2YTf8-cIhsXLWKWcga_MA4vKYYY2HC2kGZkz9OZc-Wa/exec';
   var ENQUIRY_TOKEN = '';
 
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -264,8 +264,8 @@
     });
 
     /* Posts the enquiry to the Apps Script web app, which writes the row to
-       the sheet and sends both mails through Mailgun. The Mailgun key lives
-       in that script's properties, never here.
+       the sheet and emails a notification to the admin through Gmail. No
+       email goes to the visitor.
 
        text/plain keeps this a simple request: Apps Script cannot answer the
        CORS preflight that an application/json body would trigger. The script
@@ -289,7 +289,7 @@
         return res.json().catch(function () { return { ok: res.ok }; });
       }).then(function (out) {
         if (!out || !out.ok) throw new Error((out && out.error) || 'rejected');
-        // The row is saved even if Mailgun stumbled, so only log that.
+        // The row is saved even if the admin email failed, so only log that.
         if (out.mail && out.mail.error && window.console) {
           console.warn('[spark] saved, but mail failed:', out.mail.error);
         }
@@ -331,7 +331,7 @@
         })
         .catch(function () {
           if (done) {
-            done.textContent = 'That did not send. Try again, or email us directly.';
+            done.textContent = 'That did not send. Try again, or call us on +1 (437) 988-0193.';
             done.hidden = false;
           }
         })

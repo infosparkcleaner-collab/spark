@@ -1,21 +1,16 @@
 /**
  * Spark enquiry endpoint
  * ----------------------
- * Paste this whole file into the Apps Script editor, deploy as a web app,
- * and it works. The sheet id is set below, so no Script Properties are
- * needed to start recording enquiries.
+ * Paste this whole file into the Apps Script editor and deploy it as a web
+ * app. Each enquiry from the website form does two things:
  *
- * Email is optional and stays off until you configure it. Add these in
- * Project Settings > Script Properties whenever Mailgun is ready and mail
- * starts sending with no change to this file:
+ *   1. it is written to the sheet below, and
+ *   2. it is emailed to ADMIN_EMAIL, through the Google account that owns
+ *      this script, with Reply-To set to the person who enquired.
  *
- *   MAILGUN_KEY      Mailgun private API key
- *   MAILGUN_DOMAIN   sending domain, e.g. mg.example.com
- *   MAILGUN_REGION   us | eu            (default us)
- *   MAIL_FROM        Spark <enquiries@mg.example.com>
- *   ADMIN_EMAIL      where the notification goes
- *
- * The Mailgun key belongs in Script Properties, never in this file.
+ * Nobody who fills in the form is emailed. There is no Mailgun and no
+ * Script Property to set. A free Google account can send about 100
+ * messages a day this way.
  *
  * Deploy > New deployment > Web app
  *   Execute as:     Me
@@ -27,13 +22,14 @@
 var SHEET_ID = '14QeG934ncsTFJbg34De3kirlRwQDeZgbfiewtuR7pEs';
 var SHEET_TAB = 'Enquiries';
 
+/* Where each new enquiry is emailed. */
+var ADMIN_EMAIL = 'info.sparkcleaner@gmail.com';
+
 /* Set the same string as ENQUIRY_TOKEN in js/site.js to stop drive-by
    posting. Left empty, no token is required. */
 var FORM_TOKEN = '';
 
 /* ========================================================== */
-
-var PROPS = PropertiesService.getScriptProperties();
 
 var HEADERS = [
   'Received', 'Name', 'Email', 'Phone', 'Company', 'Enquiry type', 'Message', 'Source'
@@ -69,9 +65,9 @@ function doPost(e) {
 
     appendRow(enquiry);
 
-    // The row is the record of truth. Mail is an extra on top, so a mail
-    // fault is reported but never loses the enquiry.
-    return reply(200, { ok: true, mail: sendMail(enquiry) });
+    // The row is the record of truth. The email is an extra on top, so an
+    // email fault is reported but never loses the enquiry.
+    return reply(200, { ok: true, mail: notifyAdmin(enquiry) });
 
   } catch (err) {
     console.error('enquiry failed', err);
@@ -83,8 +79,8 @@ function doPost(e) {
   }
 }
 
-/** A GET is only a health check. ?check=1 reports configuration state as
- *  booleans and never returns a stored value, so no key can leak. */
+/** A GET is only a health check. ?check=1 reports state and never returns
+ *  a stored value or any address. */
 function doGet(e) {
   if (!(e && e.parameter && e.parameter.check)) {
     return reply(200, { ok: true, service: 'spark-enquiry' });
@@ -98,19 +94,18 @@ function doGet(e) {
     sheet = 'cannot open: ' + message(err);
   }
 
-  var need = ['MAILGUN_KEY', 'MAILGUN_DOMAIN', 'MAIL_FROM', 'ADMIN_EMAIL'];
-  var set = {};
-  need.concat(['MAILGUN_REGION']).forEach(function (k) { set[k] = !!PROPS.getProperty(k); });
-  var missingMail = need.filter(function (k) { return !set[k]; });
+  // How many more emails can go out today. Not available until the script
+  // has been authorized to send mail (run testAdminEmail once).
+  var quotaLeft;
+  try { quotaLeft = MailApp.getRemainingDailyQuota(); } catch (err) { quotaLeft = 'not authorized yet'; }
 
   return reply(200, {
     ok: sheetReady,
     sheetReady: sheetReady,
     sheet: sheet,
     tab: SHEET_TAB,
-    mailReady: missingMail.length === 0,
-    missingForMail: missingMail,
-    mailProperties: set
+    adminNotification: 'gmail',
+    gmailQuotaLeftToday: quotaLeft
   });
 }
 
@@ -151,48 +146,16 @@ function appendRow(enquiry) {
 
 /* ----------------------------------------------------------------- mail */
 
-/** Sends nothing and says why until Mailgun is configured. */
-function sendMail(enquiry) {
-  var key = PROPS.getProperty('MAILGUN_KEY');
-  var domain = PROPS.getProperty('MAILGUN_DOMAIN');
-  var from = PROPS.getProperty('MAIL_FROM');
-  var admin = PROPS.getProperty('ADMIN_EMAIL');
-
-  if (!key || !domain || !from || !admin) {
-    return { sent: false, skipped: 'mailgun not configured' };
-  }
-
-  var out = { sent: false, confirmation: false, notification: false, error: null };
+/** The one email this script sends: a notification to ADMIN_EMAIL.
+ *  Returns { sent, error } and never throws. */
+function notifyAdmin(enquiry) {
   try {
-    mailgun(key, domain, {
-      from: from,
-      to: enquiry.name + ' <' + enquiry.email + '>',
-      subject: 'We have your enquiry — Spark Brake & Parts Cleaner',
-      text: [
-        'Hi ' + enquiry.name + ',',
-        '',
-        'Thanks for getting in touch about Spark. Your enquiry is with us and',
-        'we usually reply within two working days.',
-        '',
-        line('Enquiry', enquiry.type),
-        line('Company', enquiry.company),
-        line('Phone', enquiry.phone),
-        '',
-        enquiry.message,
-        '',
-        '--',
-        'Spark Brake & Parts Cleaner',
-        'Professional strength, 550 ml. Non-chlorinated, low VOC.'
-      ].filter(notNull).join('\n')
-    });
-    out.confirmation = true;
-
-    mailgun(key, domain, {
-      from: from,
-      to: admin,
-      'h:Reply-To': enquiry.name + ' <' + enquiry.email + '>',
+    MailApp.sendEmail({
+      to: ADMIN_EMAIL,
+      replyTo: enquiry.email,
+      name: 'Spark website',
       subject: 'Spark enquiry — ' + enquiry.name + (enquiry.company ? ' (' + enquiry.company + ')' : ''),
-      text: [
+      body: [
         'New enquiry from the Spark site. Reply to this mail to answer them directly.',
         '',
         line('Name', enquiry.name),
@@ -203,36 +166,17 @@ function sendMail(enquiry) {
         line('Page', enquiry.source),
         '',
         'Message:',
-        enquiry.message
+        enquiry.message,
+        '',
+        '--',
+        'All enquiries: https://docs.google.com/spreadsheets/d/' + SHEET_ID
       ].filter(notNull).join('\n')
     });
-    out.notification = true;
-    out.sent = true;
-
+    return { sent: true, error: null };
   } catch (err) {
-    out.error = message(err);
-    console.error('mail failed', err);
+    console.error('admin email failed', err);
+    return { sent: false, error: message(err) };
   }
-  return out;
-}
-
-function mailgun(key, domain, fields) {
-  var host = (PROPS.getProperty('MAILGUN_REGION') || 'us').toLowerCase() === 'eu'
-    ? 'api.eu.mailgun.net'
-    : 'api.mailgun.net';
-
-  var res = UrlFetchApp.fetch('https://' + host + '/v3/' + domain + '/messages', {
-    method: 'post',
-    headers: { Authorization: 'Basic ' + Utilities.base64Encode('api:' + key) },
-    payload: fields,
-    muteHttpExceptions: true
-  });
-
-  var code = res.getResponseCode();
-  if (code < 200 || code >= 300) {
-    throw new Error('Mailgun ' + code + ': ' + res.getContentText().slice(0, 200));
-  }
-  return true;
 }
 
 /* ---------------------------------------------------------------- utils */
@@ -292,14 +236,29 @@ function testSheet() {
   return 'row written to "' + SpreadsheetApp.openById(SHEET_ID).getName() + '"';
 }
 
-/** Once Mailgun is configured, this writes a row and sends both messages. */
-function selfTest() {
-  var admin = PROPS.getProperty('ADMIN_EMAIL');
-  if (!admin) throw new Error('Set ADMIN_EMAIL in Script Properties first');
+/** Run this once after pasting the script. It sends one sample notification
+ *  to ADMIN_EMAIL and writes nothing to the sheet. It also triggers the
+ *  permission prompt for sending mail, which you must approve before
+ *  deploying. */
+function testAdminEmail() {
+  var out = notifyAdmin({
+    name: 'Test Enquiry',
+    email: ADMIN_EMAIL,
+    phone: '',
+    company: 'Notification check',
+    type: 'technical',
+    message: 'Sent by testAdminEmail(). If you can read this, new enquiries will reach you.',
+    source: 'testAdminEmail()'
+  });
+  if (!out.sent) throw new Error(out.error || 'the email was not sent');
+  return 'notification sent to ' + ADMIN_EMAIL;
+}
 
+/** Writes a row and sends the notification, exactly as a real enquiry does. */
+function selfTest() {
   var enquiry = {
     name: 'Test Enquiry',
-    email: admin,
+    email: ADMIN_EMAIL,
     phone: '',
     company: 'Self test',
     type: 'technical',
@@ -307,5 +266,5 @@ function selfTest() {
     source: 'selfTest()'
   };
   appendRow(enquiry);
-  return sendMail(enquiry);
+  return notifyAdmin(enquiry);
 }
