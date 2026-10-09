@@ -236,6 +236,15 @@
     });
   }
 
+  // Keep the product in the existing message field, which the enquiry service stores.
+  var enquiryMessage = document.getElementById('f-message');
+  var enquiryProduct = (new URLSearchParams(window.location.search)).get('product');
+  if (enquiryMessage && !enquiryMessage.value && enquiryProduct === 'spark-40') {
+    enquiryMessage.defaultValue = enquiryType && enquiryType.value === 'technical'
+      ? 'I have a product question about SPARK 40 Multi Use Lubricant (550 ml).\n\n'
+      : 'I would like pricing and availability for SPARK 40 Multi Use Lubricant (550 ml).\n\n';
+  }
+
   if (form) {
     var done = document.getElementById('formDone');
 

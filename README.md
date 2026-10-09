@@ -16,6 +16,7 @@ and unknown paths get `404.html`.
 
 | Page | Purpose |
 |---|---|
+| `spark-40.html` | SPARK 40 lubricant page: dark hero, gallery, supply panel, range band and product-specific enquiries |
 | `index.html` | 3D product tour, workshop video, performance, how to use, applications, specifications, FAQ, trade, enquiry form |
 | `brake-cleaner-guide.html` | Long-form guide: how to use brake cleaner, chlorinated vs non-chlorinated, safety |
 | `about.html` | Brand story and trade call to action |
@@ -83,6 +84,18 @@ and `llms.txt`; change it everywhere when the production domain is set.
 
 Off-site work (Google Business Profile, directories, Safety Data Sheet) and the
 questions still open are in `_local/docs/seo-audit-ontario.html`.
+
+## SPARK 40 imagery
+
+SPARK 40 is a separate product (blue can) from the brake cleaner (black can). The
+only source for its packaging is one AI-generated render supplied by the client,
+so every image is AI-generated and the page says so. Replace them with real photos
+when the finished can exists. Files in `assets/img/`: `spark-40-packshot.jpg` (hero),
+`spark-40-in-use.jpg`, `spark-40-bench.jpg`, `spark-40-cap.jpg`, `spark-range.jpg`
+(both cans together), `spark-40-banner.jpg` (hero of the SPARK 40 page), `spark-40-share.jpg`
+(1200x630 link preview). The fine print on the can is illegible in the source, so
+the images keep it illegible on purpose: do not let a generator write out hazard
+wording that is not on the real label. Full-size originals are in `_local/gen/`.
 
 ## Analytics
 
