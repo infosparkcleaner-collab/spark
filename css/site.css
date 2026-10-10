@@ -535,3 +535,18 @@ address{font-style:normal}
 }
 
 .about-home__more{margin-top:36px}
+
+/* SPARK 40 banner on the home page: a rounded navy card on a light band. */
+.promo{padding-block:clamp(40px,6vw,72px)}
+.promo__card{position:relative;isolation:isolate;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);align-items:stretch;overflow:hidden;border-radius:14px;background:#0b1544;color:#fff}
+.promo__copy{position:relative;z-index:1;padding:clamp(32px,5vw,64px);display:flex;flex-direction:column;align-items:flex-start;justify-content:center}
+.promo__eyebrow{font-size:.875rem;font-weight:600;color:#ffb68a}
+.promo__copy h2{margin-top:14px;font-size:clamp(2.6rem,4.6vw,4.2rem);font-weight:700;font-stretch:80%;line-height:1.04;letter-spacing:-.05em}
+.promo__type{margin-top:16px;font-size:clamp(1.125rem,1.7vw,1.4rem);font-weight:550;line-height:1.35}
+.promo__text{margin:12px 0 28px;max-width:34ch;color:#cdd3ee;font-size:1rem}
+.promo__img{width:100%;height:100%;min-height:340px;object-fit:cover;object-position:68% 50%;mask-image:linear-gradient(to right,transparent,#000 32%)}
+@media(max-width:699px){
+ .promo__card{grid-template-columns:minmax(0,1fr)}
+ .promo__img{order:-1;min-height:0;aspect-ratio:4/3;mask-image:linear-gradient(to bottom,#000 70%,transparent)}
+ .promo__copy{padding:8px 24px 32px}
+}
