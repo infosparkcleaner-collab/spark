@@ -50,7 +50,13 @@
     </a>
 
     <nav class="menu" id="menu" aria-label="Main">
-      <a href="/spark-40">SPARK 40</a>
+      <div class="menu__group">
+        <button class="menu__parent" type="button" aria-expanded="false" aria-controls="menu-products">Products</button>
+        <div class="menu__sub" id="menu-products">
+          <a href="/">Brake &amp; Parts Cleaner</a>
+          <a href="/spark-40">Spark-40</a>
+        </div>
+      </div>
       <a href="/#performance">Why Spark</a>
       <a href="/#specs">Specifications</a>
       <a href="/about">About</a>

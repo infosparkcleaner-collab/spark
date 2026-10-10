@@ -72,6 +72,25 @@
       if (e.target.closest('a')) setMenu(false);
     });
 
+    // Products dropdown (desktop). On the mobile panel the links are always listed.
+    var group = menu.querySelector('.menu__group');
+    var parent = group && group.querySelector('.menu__parent');
+    if (parent) {
+      parent.addEventListener('click', function () {
+        var open = !group.classList.contains('is-open');
+        group.classList.toggle('is-open', open);
+        parent.setAttribute('aria-expanded', String(open));
+      });
+      document.addEventListener('click', function (e) {
+        if (!group.contains(e.target)) { group.classList.remove('is-open'); parent.setAttribute('aria-expanded', 'false'); }
+      });
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && group.classList.contains('is-open')) {
+          group.classList.remove('is-open'); parent.setAttribute('aria-expanded', 'false'); parent.focus();
+        }
+      });
+    }
+
     document.addEventListener('keydown', function (e) {
       if (e.key === 'Escape' && burger.getAttribute('aria-expanded') === 'true') {
         setMenu(false);
